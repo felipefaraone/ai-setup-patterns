@@ -3,13 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ai-setup-patterns — monolithic vs embedded helpers</title>
+<title>ai-setup-patterns — live demo</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --color-bg: #ffffff;
     --color-bg-secondary: #f5f4f0;
-    --color-bg-tertiary: #eeece8;
     --color-text-primary: #1a1a18;
     --color-text-secondary: #6b6a66;
     --color-text-tertiary: #9b9a96;
@@ -23,14 +22,15 @@
   body { font-family: var(--font-sans); font-size: 14px; line-height: 1.6; color: var(--color-text-primary); background: var(--color-bg); padding: 2rem 1rem; }
   .page { max-width: 960px; margin: 0 auto; }
 
-  .page-header { margin-bottom: 2rem; }
-  .page-header h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
-  .page-header p { font-size: 13px; color: var(--color-text-secondary); }
-  .page-header a { color: var(--color-text-secondary); text-decoration: none; border-bottom: 1px solid var(--color-border); }
+  .intro { margin-bottom: 16px; }
+  .intro-title { font-size: 16px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 4px; }
+  .intro-sub { font-size: 13px; color: var(--color-text-secondary); }
+  .intro-sub a { color: var(--color-text-secondary); text-decoration: none; border-bottom: 1px solid var(--color-border); }
+  .divider { height: 1px; background: var(--color-border); margin: 14px 0; }
 
-  .ctx { background: var(--color-bg-secondary); border: 0.5px solid var(--color-border); border-radius: var(--radius-md); padding: 12px 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
-  .ctx-t { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
-  .ctx-d { font-size: 12px; color: var(--color-text-secondary); line-height: 1.6; }
+  .ctx { background: var(--color-bg-secondary); border: 0.5px solid var(--color-border); border-radius: var(--radius-md); padding: 10px 16px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .ctx-t { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+  .ctx-d { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
   .rbtn { font-size: 12px; padding: 5px 12px; border: 0.5px solid var(--color-border-secondary); border-radius: 6px; background: var(--color-bg); color: var(--color-text-secondary); cursor: pointer; white-space: nowrap; flex-shrink: 0; }
   .rbtn:hover { background: var(--color-bg-secondary); }
 
@@ -108,28 +108,23 @@
   .ctable { width: 100%; border-collapse: collapse; }
   .ctable th { font-size: 10px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .04em; padding: 9px 16px; text-align: left; border-bottom: 0.5px solid var(--color-border); background: var(--color-bg); }
   .ctable th:not(:first-child) { text-align: center; }
-  .ctable td { font-size: 12px; color: var(--color-text-primary); padding: 10px 16px; border-bottom: 0.5px solid var(--color-border); vertical-align: middle; }
+  .ctable td { font-size: 12px; padding: 10px 16px; border-bottom: 0.5px solid var(--color-border); }
   .ctable tr:last-child td { border-bottom: none; }
   .ctable td:not(:first-child) { text-align: center; }
   .ctable td:first-child { color: var(--color-text-secondary); font-size: 11px; width: 36%; }
   .ctable tr:hover td { background: var(--color-bg-secondary); }
   .bad { color: #993C1D; font-weight: 500; } .good { color: #0F6E56; font-weight: 500; }
 
-  .where { display: none; margin-top: 20px; }
-  .where.show { display: block; }
-  .where-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 12px; }
-  .phases { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .outlook { margin-top: 24px; padding-top: 20px; border-top: 0.5px solid var(--color-border); }
+  .outlook-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 12px; }
+  .phases { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .phase { background: var(--color-bg); border: 0.5px solid var(--color-border); border-radius: var(--radius-md); padding: 10px 12px; }
-  .phase-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-  .phase-num { font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 99px; white-space: nowrap; }
-  .p1 { background: #E6F1FB; color: #185FA5; }
-  .p2 { background: #E1F5EE; color: #0F6E56; }
-  .p3 { background: #EEEDFE; color: #534AB7; }
-  .p4 { background: #FAEEDA; color: #854F0B; }
+  .phase-head { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+  .phase-num { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+  .p1 { background: #E6F1FB; color: #185FA5; } .p2 { background: #E1F5EE; color: #0F6E56; }
+  .p3 { background: #EEEDFE; color: #534AB7; } .p4 { background: #FAEEDA; color: #854F0B; }
   .phase-title { font-size: 12px; font-weight: 500; color: var(--color-text-primary); }
   .phase-desc { font-size: 11px; color: var(--color-text-secondary); line-height: 1.5; }
-  .where-note { font-size: 11px; color: var(--color-text-secondary); padding: 10px 14px; background: var(--color-bg-secondary); border-radius: var(--radius-md); border: 0.5px solid var(--color-border); line-height: 1.6; }
-  .where-note strong { color: var(--color-text-primary); font-weight: 500; }
 
   .page-footer { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 0.5px solid var(--color-border); font-size: 12px; color: var(--color-text-tertiary); display: flex; justify-content: space-between; align-items: center; }
   .page-footer a { color: var(--color-text-secondary); text-decoration: none; border-bottom: 1px solid var(--color-border); }
@@ -144,15 +139,16 @@
 <body>
 <div class="page">
 
-  <div class="page-header">
-    <h1>ai-setup-patterns</h1>
-    <p>A live demo companion to the <a href="https://github.com/felipefaraone/ai-setup-patterns">GitHub repository</a>. Same task, two architectures. Interact with both and see the difference.</p>
+  <div class="intro">
+    <div class="intro-title">ai-setup-patterns — live demo</div>
+    <div class="intro-sub">Companion to the <a href="https://github.com/felipefaraone/ai-setup-patterns">GitHub repository</a>. Same setup task, two architectures. Interact with both sides and see the difference in complexity, speed, and where responsibility lives.</div>
   </div>
+  <div class="divider"></div>
 
   <div class="ctx">
     <div>
-      <div class="ctx-t">Same task, two architectures</div>
-      <div class="ctx-d">A sales team wants to receive leads from your platform. You need to connect their endpoint, match your data fields to theirs, and set pricing rules. Watch how each approach handles it.</div>
+      <div class="ctx-t">Task: set up a webhook integration for a new buyer</div>
+      <div class="ctx-d">Connect their endpoint, map source fields to destination fields, set pricing and routing rules.</div>
     </div>
     <button class="rbtn" onclick="resetAll()">↺ Reset</button>
   </div>
@@ -196,11 +192,7 @@
     <div class="compare-title">What the numbers actually mean</div>
     <table class="ctable">
       <thead>
-        <tr>
-          <th></th>
-          <th>Monolithic assistant</th>
-          <th>Embedded helpers</th>
-        </tr>
+        <tr><th></th><th>Monolithic assistant</th><th>Embedded helpers</th></tr>
       </thead>
       <tbody>
         <tr><td>Total time</td><td class="bad">~8 min</td><td class="good">~2 min</td></tr>
@@ -215,28 +207,25 @@
     </table>
   </div>
 
-  <div class="where" id="where-panel">
-    <div class="where-title">Where this goes — the helper pattern as phase one</div>
+  <div class="outlook">
+    <div class="outlook-title">Where this goes — the helper pattern as phase one</div>
     <div class="phases">
       <div class="phase">
         <div class="phase-head"><span class="phase-num p1">Phase 1</span><span class="phase-title">Helpers prove value</span></div>
-        <div class="phase-desc">Each helper solves one specific task with a measurable outcome. Field mapping. Posting instructions parsing. Schema generation. Small scope, easy to validate.</div>
+        <div class="phase-desc">One task. One helper. Measurable outcome. Field mapping, schema parsing, posting instructions — each solved in context.</div>
       </div>
       <div class="phase">
         <div class="phase-head"><span class="phase-num p2">Phase 2</span><span class="phase-title">Helpers become a reusable AI layer</span></div>
-        <div class="phase-desc">The same field mapping helper gets called from any integration screen. The investment compounds across the product instead of being rebuilt for each use case.</div>
+        <div class="phase-desc">The same field mapping helper gets called from any integration screen. The investment compounds instead of being rebuilt per use case.</div>
       </div>
       <div class="phase">
         <div class="phase-head"><span class="phase-num p3">Phase 3</span><span class="phase-title">Assistant becomes a routing layer</span></div>
-        <div class="phase-desc">Instead of carrying the setup itself, the assistant understands intent and routes the user to the right screen and the right helper. It coordinates — it doesn't execute.</div>
+        <div class="phase-desc">The assistant understands intent and routes the user to the right screen and the right helper. It coordinates — it doesn't execute.</div>
       </div>
       <div class="phase">
         <div class="phase-head"><span class="phase-num p4">Phase 4</span><span class="phase-title">System becomes proactive</span></div>
-        <div class="phase-desc">With helpers running and generating data, the product surfaces insights without being asked. Delivery failures flagged before the user notices. The AI shifts from reactive to ambient.</div>
+        <div class="phase-desc">With helpers running and generating data, the product surfaces insights without being asked. The AI shifts from reactive to ambient.</div>
       </div>
-    </div>
-    <div class="where-note">
-      <strong>This is the microservices moment for AI product design.</strong> Just as monolithic applications gave way to distributed service architectures, single all-purpose assistants are giving way to orchestrated systems of specialized helpers — each with a contained failure surface, each independently testable, each compounding in value as the layer grows. Gartner predicts 40% of enterprise applications will embed task-specific AI agents by end of 2026, up from less than 5% in 2025.
     </div>
   </div>
 
@@ -324,14 +313,11 @@ function checkBoth(){
   if(hDone&&document.getElementById('m-res').classList.contains('show')){
     document.getElementById('pane-h').classList.add('winner');
     document.getElementById('compare-panel').classList.add('show');
-    document.getElementById('where-panel').classList.add('show');
   }
 }
 
-function fv(label,val,mono){
-  return `<div class="frow"><span class="flabel">${label}</span><span class="fval${mono?' mono':''}">${val}</span></div>`;
-}
-function setFooter(html){document.getElementById('h-footer').innerHTML=html;}
+function fv(l,v,m){return`<div class="frow"><span class="flabel">${l}</span><span class="fval${m?' mono':''}">${v}</span></div>`;}
+function setFooter(h){document.getElementById('h-footer').innerHTML=h;}
 
 function renderS1(){
   document.getElementById('h-tag').textContent='Step 1 of 3';
@@ -430,7 +416,6 @@ function resetAll(){
   document.getElementById('h-res').classList.remove('show');
   document.getElementById('pane-h').classList.remove('winner');
   document.getElementById('compare-panel').classList.remove('show');
-  document.getElementById('where-panel').classList.remove('show');
   setInput(null);
   const s0=sc[0];addBub('ai',s0.t,s0.ms);
   document.getElementById('m-tag').textContent=s0.ph;
