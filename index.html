@@ -285,7 +285,7 @@ function checkBoth(){
 }
 
 function fv(label,val,mono){
-  return '<div class="frow"><span class="flabel">'+label+'</span><span class="fval'+(mono?' mono':'')+'">'+val+'</span></div>';
+  return `<div class="frow"><span class="flabel">${label}</span><span class="fval${mono?' mono':''}">${val}</span></div>`;
 }
 
 function setFooter(html){document.getElementById('h-footer').innerHTML=html;}
@@ -298,7 +298,7 @@ function renderS1(){
   s.innerHTML='<div class="sp act">1 Endpoint</div><div class="sp">2 Field mapping</div><div class="sp">3 Routing rules</div>';
   b.appendChild(s);
   const fc=document.createElement('div');fc.className='fcard';
-  fc.innerHTML='<div class="fct">Connection details</div>'+fv('Name','Acme Webhook')+fv('Endpoint URL','https://acme.io/leads',true)+fv('Content type','JSON')+fv('Lead type','Mortgage leads');
+  fc.innerHTML=`<div class="fct">Connection details</div>${fv('Name','Acme Webhook')}${fv('Endpoint URL','https://acme.io/leads',true)}${fv('Content type','JSON')}${fv('Lead type','Mortgage leads')}`;
   b.appendChild(fc);
   setFooter('<button class="btn-pri" onclick="renderS2()">Next — field mapping →</button>');
 }
@@ -311,7 +311,7 @@ function renderS2(){
   s.innerHTML='<div class="sp done">1 Endpoint</div><div class="sp act">2 Field mapping</div><div class="sp">3 Routing rules</div>';
   b.appendChild(s);
   const fc=document.createElement('div');fc.className='fcard';
-  fc.innerHTML='<div class="fct">Posting instructions</div>'+fv('JSON schema','{ "first_name": "John", "loan_amount": 250000, "state": "CA", "email": "j@j.com" }',true);
+  fc.innerHTML=`<div class="fct">Posting instructions</div>${fv('JSON schema','{ "first_name": "John", "loan_amount": 250000, "state": "CA", "email": "j@j.com" }',true)}`;
   b.appendChild(fc);
   const hb=document.createElement('div');hb.id='hbox';hb.style.display='none';b.appendChild(hb);
   setFooter('<button class="btn-ghost" onclick="renderS1()">← Back</button><button class="btn-pri" onclick="runHelper()">Analyze with AI helper →</button>');
@@ -328,7 +328,7 @@ function runHelper(){
     hb.innerHTML='<div class="hbox-head"><div class="hdot"></div><div class="htitle">Field mapping helper — 4 of 4 matched</div><div class="htime">2.1s</div></div>';
     [['first_name','contact_first_name'],['loan_amount','requested_amount'],['state','target_state'],['email','contact_email']].forEach(([s,d])=>{
       const r=document.createElement('div');r.className='mrow';
-      r.innerHTML='<div class="mc">'+s+'</div><div class="ma">→</div><div class="mc">'+d+'</div><div class="chi">matched</div>';
+      r.innerHTML=`<div class="mc">${s}</div><div class="ma">→</div><div class="mc">${d}</div><div class="chi">matched</div>`;
       hb.appendChild(r);
     });
     const n=document.createElement('div');n.className='hnote';n.textContent='Review and adjust if needed. Accepted mappings apply on save.';
@@ -349,7 +349,7 @@ function renderS3(){
   hd.innerHTML='<div class="hbox-head"><div class="hdot"></div><div class="htitle">4 field mappings accepted</div></div>';
   b.appendChild(hd);
   const fc=document.createElement('div');fc.className='fcard';
-  fc.innerHTML='<div class="fct">Routing rules</div>'+fv('Price per lead','$200')+fv('Exclusivity','Exclusive')+fv('Target states','California, Texas');
+  fc.innerHTML=`<div class="fct">Routing rules</div>${fv('Price per lead','$200')}${fv('Exclusivity','Exclusive')}${fv('Target states','California, Texas')}`;
   b.appendChild(fc);
   setFooter('<button class="btn-ghost" onclick="renderS2()">← Back</button><button class="btn-outline">Save draft</button><button class="btn-pri" onclick="helperDone()">Activate →</button>');
 }
@@ -364,13 +364,13 @@ function helperDone(){
   b.appendChild(s);
   const fc=document.createElement('div');fc.className='fcard';
   fc.style.cssText='padding:1.5rem 1rem;text-align:center;';
-  fc.innerHTML='<div style="font-size:14px;font-weight:500;margin-bottom:4px;">Acme Webhook active</div>'
-  +'<div style="font-size:12px;color:#6b6a66;margin-bottom:12px;">4 fields mapped · CA, TX · $200 · Exclusive</div>'
-  +'<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">'
-  +'<span style="font-size:11px;padding:3px 10px;border-radius:99px;background:#E1F5EE;color:#0F6E56;">~2 min total</span>'
-  +'<span style="font-size:11px;padding:3px 10px;border-radius:99px;background:#E1F5EE;color:#0F6E56;">3 product steps</span>'
-  +'<span style="font-size:11px;padding:3px 10px;border-radius:99px;background:#E1F5EE;color:#0F6E56;">AI ran once · 2.1s</span>'
-  +'</div>';
+  fc.innerHTML=`<div style="font-size:14px;font-weight:500;margin-bottom:4px;">Acme Webhook active</div>
+  <div style="font-size:12px;color:#6b6a66;margin-bottom:12px;">4 fields mapped · CA, TX · $200 · Exclusive</div>
+  <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">
+    <span style="font-size:11px;padding:3px 10px;border-radius:99px;background:#E1F5EE;color:#0F6E56;">~2 min total</span>
+    <span style="font-size:11px;padding:3px 10px;border-radius:99px;background:#E1F5EE;color:#0F6E56;">3 product steps</span>
+    <span style="font-size:11px;padding:3px 10px;border-radius:99px;background:#E1F5EE;color:#0F6E56;">AI ran once · 2.1s</span>
+  </div>`;
   b.appendChild(fc);
   setFooter('');
   document.getElementById('h-res').classList.add('show');
@@ -401,3 +401,4 @@ renderS1();
 </script>
 </body>
 </html>
+
