@@ -82,7 +82,15 @@ User → Product UI → [AI owns: one specific interpretation task]
 
 **Testability improves** because each helper can be evaluated independently: given input X, does the output meet expectations?
 
-This pattern is not a novel idea — it's where the industry is converging. Gartner predicts 40% of enterprise applications will embed task-specific AI agents by the end of 2026, up from less than 5% in 2025. The framing has shifted from "build one AI that does everything" to purpose-built agents that solve specific problems and integrate into existing workflows without requiring an overhaul of entire systems. The monolithic all-in-one agent is the new monolith — and it has the same problems.
+This pattern is not a novel idea — it's where the industry is converging.
+
+Gartner predicts 40% of enterprise applications will embed task-specific AI agents by the end of 2026, up from less than 5% in 2025.
+
+The products that validated this pattern didn't start with a monolithic assistant. GitHub Copilot launched in 2021 as inline autocomplete — one task, in the right place. In 2023 it added Copilot Chat. In 2025 it shipped agent mode and an autonomous coding agent. Each capability added incrementally, each embedded where it was relevant. Cursor followed the same arc: autocomplete in 2023, Composer for multi-file editing in 2024, agent mode as the default in 2025. The CEO of Cursor described their own evolution in three eras: Tab autocomplete, then synchronous agents, then autonomous cloud agents — "start narrow, prove value, expand deliberately" articulated as a product thesis.
+
+Neither product tried to build a monolithic assistant that did everything from day one. Both started with the narrowest possible task, proved it worked, then layered complexity on top of a foundation that already had user trust.
+
+The monolithic all-in-one assistant is the new monolith — and it has the same problems.
 
 ---
 
