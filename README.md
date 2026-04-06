@@ -2,15 +2,21 @@
 
 **Where monolithic AI assistants hit their limits in production — and what to build instead.**
 
-→ [Live demo](https://felipefaraone.github.io/ai-setup-patterns)
-
 ---
 
 ## Background
 
 MCP (Model Context Protocol) is an open standard that lets AI models call external tools through a structured interface. In a setup flow, this means the AI can create records, fetch data, and execute configuration steps — not just talk about them.
 
-This repository documents what I learned leading the product strategy for a production MCP-based AI assistant in a B2B SaaS environment. The engineering team built the infrastructure; product architecture and prompt design were developed collaboratively with the team. My role was translating product decisions into prompt logic, evaluating what broke, and defining the path forward.
+This repository documents what I learned leading the product and prompt strategy for a production MCP-based AI assistant in a B2B SaaS environment. The engineering team built the infrastructure; my role was defining the product architecture, prompt design, and what to do when the first version didn't perform as expected.
+
+---
+
+## Status
+
+The monolithic assistant is what shipped. It works, users adopted it, and it delivered real results — onboarding time went from days to under 15 minutes, with zero schema violations in production.
+
+The embedded helper pattern is the architectural direction that emerged from production telemetry. It's what I'd build next, and what I recommend building, based on what the data showed. This repository documents that evolution: what we shipped (the MVP), what we measured, why the architecture needs to change, and what the next version looks like.
 
 ---
 
@@ -46,7 +52,7 @@ That's the structural problem with the monolithic assistant pattern.
 Sequencing, validation, and state management belong in your application layer. When they live in a prompt, you've replaced deterministic code with probabilistic inference. The assistant might skip a required step, re-ask a question it already answered, or lose state across a context summarization boundary.
 
 **Reliability degrades with complexity.**
-Each additional phase or branching path increases the surface area for the model to deviate. A flow with 8 phases and 4 delivery types has far more failure modes than 8 separate, contained interactions. In practice: after 60+ test runs and significant prompt refinement, ~75% of remaining misbehavior cases were explicit instructions being ignored by the model — not ambiguity problems. At that point, you've hit the ceiling of what prompt engineering can do.
+Each additional phase or branching path increases the surface area for the model to deviate. A flow with 8 phases and 4 delivery types has far more failure modes than 8 separate, contained interactions.
 
 **Testing is expensive and non-deterministic.**
 You can't unit test a prompt. You run it, observe what happens, patch the wording, run it again. At scale this becomes dozens of manual runs per change, with results that vary between model versions and between calls to the same model.
@@ -82,16 +88,6 @@ User → Product UI → [AI owns: one specific interpretation task]
 
 **Testability improves** because each helper can be evaluated independently: given input X, does the output meet expectations?
 
-This pattern is not a novel idea — it's where the industry is converging.
-
-Gartner predicts 40% of enterprise applications will embed task-specific AI agents by the end of 2026, up from less than 5% in 2025.
-
-The products that validated this pattern didn't start with a monolithic assistant. GitHub Copilot launched in 2021 as inline autocomplete — one task, in the right place. In 2023 it added Copilot Chat. In 2025 it shipped agent mode and an autonomous coding agent. Each capability added incrementally, each embedded where it was relevant. Cursor followed the same arc: autocomplete in 2023, Composer for multi-file editing in 2024, agent mode as the default in 2025. The CEO of Cursor described their own evolution in three eras: Tab autocomplete, then synchronous agents, then autonomous cloud agents — "start narrow, prove value, expand deliberately" articulated as a product thesis.
-
-Neither product tried to build a monolithic assistant that did everything from day one. Both started with the narrowest possible task, proved it worked, then layered complexity on top of a foundation that already had user trust.
-
-The monolithic all-in-one assistant is the new monolith — and it has the same problems.
-
 ---
 
 ## What this looks like in practice
@@ -101,39 +97,6 @@ A user wants to set up a webhook integration.
 **Monolithic:** The assistant carries the full flow in chat. Eight phases. Seven context summarizations. Forty-five assistant messages. Seven to ten minutes. When it fails, it can fail anywhere.
 
 **Helpers:** The assistant understands intent, collects minimal context, and opens the webhook configuration screen. The product renders the form. When the user reaches field mapping, a helper is already there — embedded in that screen, ready to take their posting instructions and return suggestions. The assistant is a routing layer. The helpers do the work.
-
----
-
-## Where this goes
-
-The helper pattern is phase one of a longer arc.
-
-**Phase 1 — Helpers prove value individually.**
-Each helper solves one specific task. Field mapping. Posting instructions parsing. Schema generation. Small scope, measurable outcome, easy to validate.
-
-**Phase 2 — Helpers become a reusable AI layer.**
-The same field mapping helper that lives in the webhook screen gets called from the FTP screen, the email screen, any integration screen. The investment compounds.
-
-**Phase 3 — The assistant becomes a routing layer.**
-Instead of carrying the setup itself, the assistant understands intent and routes the user to the right screen and the right helper. It coordinates — it doesn't execute.
-
-**Phase 4 — The system becomes proactive.**
-With helpers running and generating data, the product surfaces insights without being asked. Delivery failures flagged before the user notices. Mapping gaps identified before leads are lost. The AI shifts from reactive to ambient.
-
-This is the microservices moment for AI product design. Just as monolithic applications gave way to distributed service architectures, single all-purpose assistants are giving way to orchestrated systems of specialized helpers. The organizational and engineering challenges — state management across boundaries, orchestration logic, governance — are real. But the failure surface of each component stays contained. That's the trade worth making.
-
----
-
-## When helpers don't work
-
-Helpers are the right pattern when the task has a clear input and output, the user is already in the right context, and the AI is doing interpretation rather than execution.
-
-They're the wrong pattern when:
-- The user doesn't know where to start — a conversational entry point still has value here
-- The task spans multiple contexts the product doesn't surface in one place
-- The volume is too low to justify the UI integration investment
-
-The honest answer is that both patterns have a role. The mistake is using the monolithic assistant for everything because it demos well.
 
 ---
 
@@ -174,3 +137,4 @@ That's the real reason to make the switch.
 
 Felipe Faraone — Senior Product Manager  
 [felipefaraone.com](https://felipefaraone.com) · [LinkedIn](https://linkedin.com/in/felipefaraone) · [GitHub](https://github.com/felipefaraone)
+
