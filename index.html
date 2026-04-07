@@ -3,49 +3,39 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ai-setup-patterns — monolithic vs embedded helpers</title>
+<title>ai-setup-patterns — live demo</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
     --color-bg: #ffffff;
     --color-bg-secondary: #f5f4f0;
-    --color-bg-tertiary: #eeece8;
     --color-text-primary: #1a1a18;
     --color-text-secondary: #6b6a66;
     --color-text-tertiary: #9b9a96;
     --color-border: rgba(0,0,0,0.1);
     --color-border-secondary: rgba(0,0,0,0.18);
     --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    --font-mono: "SF Mono", "Fira Code", "Fira Mono", monospace;
+    --font-mono: "SF Mono", "Fira Code", monospace;
     --radius-md: 8px;
     --radius-lg: 12px;
   }
   body { font-family: var(--font-sans); font-size: 14px; line-height: 1.6; color: var(--color-text-primary); background: var(--color-bg); padding: 2rem 1rem; }
   .page { max-width: 960px; margin: 0 auto; }
-  .page-header { margin-bottom: 1.5rem; }
-  .page-header h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
-  .page-header p { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
-  .page-header a { color: var(--color-text-secondary); text-decoration: none; border-bottom: 1px solid var(--color-border); }
 
-  /* Product context */
-  .product-ctx { background: var(--color-bg-secondary); border: 0.5px solid var(--color-border); border-radius: var(--radius-lg); padding: 16px 20px; margin-bottom: 20px; }
-  .product-ctx-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--color-text-primary); }
-  .product-ctx p { font-size: 12.5px; color: var(--color-text-secondary); line-height: 1.7; margin-bottom: 8px; }
-  .product-ctx p:last-child { margin-bottom: 0; }
-  .product-ctx .highlight { color: var(--color-text-primary); font-weight: 500; }
-  .product-flow { display: flex; align-items: center; gap: 6px; margin: 12px 0 6px; flex-wrap: wrap; }
-  .flow-step { font-size: 11px; padding: 4px 10px; border-radius: 6px; background: var(--color-bg); border: 0.5px solid var(--color-border); color: var(--color-text-primary); }
-  .flow-arrow { font-size: 11px; color: var(--color-text-tertiary); }
+  .intro { margin-bottom: 16px; }
+  .intro-title { font-size: 16px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 4px; }
+  .intro-sub { font-size: 13px; color: var(--color-text-secondary); }
+  .intro-sub a { color: var(--color-text-secondary); text-decoration: none; border-bottom: 1px solid var(--color-border); }
+  .divider { height: 1px; background: var(--color-border); margin: 14px 0; }
 
-  /* Task context box */
-  .ctx { background: var(--color-bg); border: 0.5px solid var(--color-border-secondary); border-radius: var(--radius-md); padding: 12px 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
-  .ctx-t { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
-  .ctx-d { font-size: 12px; color: var(--color-text-secondary); line-height: 1.6; }
+  .ctx { background: var(--color-bg-secondary); border: 0.5px solid var(--color-border); border-radius: var(--radius-md); padding: 10px 16px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .ctx-t { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+  .ctx-d { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
   .rbtn { font-size: 12px; padding: 5px 12px; border: 0.5px solid var(--color-border-secondary); border-radius: 6px; background: var(--color-bg); color: var(--color-text-secondary); cursor: pointer; white-space: nowrap; flex-shrink: 0; }
   .rbtn:hover { background: var(--color-bg-secondary); }
 
   .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .pane { border-radius: var(--radius-lg); border: 0.5px solid var(--color-border); background: var(--color-bg-secondary); display: flex; flex-direction: column; height: 520px; }
+  .pane { border-radius: var(--radius-lg); border: 0.5px solid var(--color-border); background: var(--color-bg-secondary); display: flex; flex-direction: column; height: 480px; }
   .pane.winner { border: 1.5px solid #1D9E75; }
   .phead { padding: 10px 14px; border-bottom: 0.5px solid var(--color-border); background: var(--color-bg); display: flex; justify-content: space-between; align-items: flex-start; border-radius: var(--radius-lg) var(--radius-lg) 0 0; flex-shrink: 0; }
   .ptitle { font-size: 13px; font-weight: 500; }
@@ -62,8 +52,6 @@
   .bt { font-size: 10px; margin-top: 3px; color: var(--color-text-tertiary); }
   .bt.warn { color: #BA7517; }
   .stag { font-size: 10px; display: inline-block; margin-top: 3px; padding: 2px 7px; border-radius: 4px; background: #FAEEDA; color: #854F0B; }
-  /* Failure annotation */
-  .fail-note { font-size: 10px; display: block; margin-top: 4px; padding: 3px 8px; border-radius: 4px; background: #FDF2F2; color: #9B2C2C; border-left: 2px solid #E53E3E; line-height: 1.5; }
   .typing-ind { display: flex; gap: 3px; padding: 8px 11px; background: var(--color-bg); border: 0.5px solid var(--color-border); border-radius: 9px; align-self: flex-start; }
   .d { width: 5px; height: 5px; border-radius: 50%; background: var(--color-text-tertiary); animation: bl 1.2s infinite; }
   .d:nth-child(2) { animation-delay: .2s; } .d:nth-child(3) { animation-delay: .4s; }
@@ -71,7 +59,7 @@
 
   .chat-foot { padding: 8px 12px; border-top: 0.5px solid var(--color-border); background: var(--color-bg); display: flex; gap: 6px; flex-shrink: 0; border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
   .cinput { flex: 1; font-size: 12px; font-family: var(--font-sans); padding: 6px 10px; border: 0.5px solid var(--color-border-secondary); border-radius: 6px; background: var(--color-bg-secondary); color: var(--color-text-primary); }
-  .sendbtn { font-size: 12px; font-weight: 500; padding: 6px 16px; border: none; border-radius: 6px; background: #185FA5; color: #E6F1FB; cursor: pointer; white-space: nowrap; }
+  .sendbtn { font-size: 12px; font-weight: 500; font-family: var(--font-sans); padding: 6px 16px; border: none; border-radius: 6px; background: #185FA5; color: #E6F1FB; cursor: pointer; white-space: nowrap; }
   .sendbtn:disabled { background: var(--color-bg-secondary); color: var(--color-text-tertiary); border: 0.5px solid var(--color-border); cursor: default; }
 
   .resbar { padding: 8px 14px; border-top: 0.5px solid var(--color-border); display: none; justify-content: space-between; align-items: center; background: var(--color-bg); flex-shrink: 0; }
@@ -83,14 +71,14 @@
   .prod-layout { flex: 1; display: flex; flex-direction: column; min-height: 0; }
   .prod-scroll { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; min-height: 0; }
   .prod-footer { padding: 8px 12px; border-top: 0.5px solid var(--color-border); background: var(--color-bg); display: flex; align-items: center; gap: 6px; flex-shrink: 0; border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
-  .btn-ghost { font-size: 11px; padding: 5px 8px; border: none; background: none; color: var(--color-text-secondary); cursor: pointer; border-radius: 6px; white-space: nowrap; }
+  .btn-ghost { font-size: 11px; font-family: var(--font-sans); padding: 5px 8px; border: none; background: none; color: var(--color-text-secondary); cursor: pointer; border-radius: 6px; white-space: nowrap; }
   .btn-ghost:hover { background: var(--color-bg-secondary); }
-  .btn-outline { font-size: 11px; padding: 5px 10px; border: 0.5px solid var(--color-border-secondary); background: var(--color-bg); color: var(--color-text-primary); cursor: pointer; border-radius: 6px; white-space: nowrap; }
-  .btn-pri { font-size: 11px; font-weight: 500; padding: 5px 14px; border: none; border-radius: 6px; background: #185FA5; color: #E6F1FB; cursor: pointer; margin-left: auto; white-space: nowrap; }
+  .btn-outline { font-size: 11px; font-family: var(--font-sans); padding: 5px 10px; border: 0.5px solid var(--color-border-secondary); background: var(--color-bg); color: var(--color-text-primary); cursor: pointer; border-radius: 6px; white-space: nowrap; }
+  .btn-pri { font-size: 11px; font-weight: 500; font-family: var(--font-sans); padding: 5px 14px; border: none; border-radius: 6px; background: #185FA5; color: #E6F1FB; cursor: pointer; margin-left: auto; white-space: nowrap; }
   .btn-pri:hover { background: #0C447C; }
 
   .steps { display: flex; flex-shrink: 0; }
-  .sp { flex: 1; font-size: 11px; text-align: center; padding: 5px 4px; border: 0.5px solid var(--color-border); background: var(--color-bg); color: var(--color-text-tertiary); }
+  .sp { flex: 1; font-size: 11px; text-align: center; padding: 5px 4px; border: 0.5px solid var(--color-border); background: var(--color-bg); color: var(--color-text-tertiary); font-family: var(--font-sans); }
   .sp:first-child { border-radius: 6px 0 0 6px; } .sp:last-child { border-radius: 0 6px 6px 0; }
   .sp.act { color: var(--color-text-primary); font-weight: 500; background: var(--color-bg-secondary); }
   .sp.done { background: #E1F5EE; color: #0F6E56; border-color: #5DCAA5; }
@@ -114,56 +102,29 @@
   .chi { font-size: 10px; padding: 2px 6px; border-radius: 99px; background: rgba(29,158,117,.15); color: #0F6E56; text-align: center; }
   .hnote { font-size: 11px; color: #085041; margin-top: 7px; padding-top: 7px; border-top: 0.5px solid #9FE1CB; }
 
-  /* Inline helper annotation on right pane */
-  .prod-note { font-size: 10px; color: #0F6E56; background: #E1F5EE; border: 0.5px solid #9FE1CB; border-radius: 5px; padding: 3px 8px; line-height: 1.5; }
-
-  /* Narrative section */
-  .narrative { margin-top: 24px; background: var(--color-bg-secondary); border: 0.5px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; display: none; }
-  .narrative.show { display: block; }
-  .narrative-header { padding: 14px 20px 0; }
-  .narrative-header h2 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
-  .narrative-header .subtitle { font-size: 12px; color: var(--color-text-secondary); }
-  .narrative-body { padding: 12px 20px 20px; }
-  .narr-section { margin-bottom: 16px; }
-  .narr-section:last-child { margin-bottom: 0; }
-  .narr-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
-  .narr-label.red { color: #9B2C2C; }
-  .narr-label.green { color: #0F6E56; }
-  .narr-label.gray { color: var(--color-text-secondary); }
-  .narr-text { font-size: 12.5px; color: var(--color-text-secondary); line-height: 1.7; }
-  .narr-text strong { color: var(--color-text-primary); font-weight: 500; }
-  .narr-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .narr-card { background: var(--color-bg); border: 0.5px solid var(--color-border); border-radius: var(--radius-md); padding: 12px 14px; }
-  .narr-card.red-border { border-left: 3px solid #E53E3E; }
-  .narr-card.green-border { border-left: 3px solid #1D9E75; }
-  .narr-card-title { font-size: 12px; font-weight: 600; margin-bottom: 6px; }
-  .narr-card-list { font-size: 11.5px; color: var(--color-text-secondary); line-height: 1.8; }
-  .narr-divider { height: 0.5px; background: var(--color-border); margin: 16px 0; }
-
-  /* Comparison table */
-  .compare { display: none; margin-top: 16px; background: var(--color-bg-secondary); border: 0.5px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .compare { display: none; margin-top: 20px; background: var(--color-bg-secondary); border: 0.5px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
   .compare.show { display: block; }
   .compare-title { font-size: 13px; font-weight: 500; padding: 12px 16px; border-bottom: 0.5px solid var(--color-border); background: var(--color-bg); }
   .ctable { width: 100%; border-collapse: collapse; }
   .ctable th { font-size: 10px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .04em; padding: 9px 16px; text-align: left; border-bottom: 0.5px solid var(--color-border); background: var(--color-bg); }
   .ctable th:not(:first-child) { text-align: center; }
-  .ctable td { font-size: 12px; color: var(--color-text-primary); padding: 10px 16px; border-bottom: 0.5px solid var(--color-border); vertical-align: middle; }
+  .ctable td { font-size: 12px; padding: 10px 16px; border-bottom: 0.5px solid var(--color-border); }
   .ctable tr:last-child td { border-bottom: none; }
   .ctable td:not(:first-child) { text-align: center; }
   .ctable td:first-child { color: var(--color-text-secondary); font-size: 11px; width: 36%; }
   .ctable tr:hover td { background: var(--color-bg-secondary); }
   .bad { color: #993C1D; font-weight: 500; } .good { color: #0F6E56; font-weight: 500; }
 
-  /* When to use each */
-  .when-section { display: none; margin-top: 16px; background: var(--color-bg-secondary); border: 0.5px solid var(--color-border); border-radius: var(--radius-lg); padding: 16px 20px; }
-  .when-section.show { display: block; }
-  .when-title { font-size: 13px; font-weight: 500; margin-bottom: 12px; }
-  .when-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .when-card { background: var(--color-bg); border: 0.5px solid var(--color-border); border-radius: var(--radius-md); padding: 12px 14px; }
-  .when-card-title { font-size: 12px; font-weight: 600; margin-bottom: 6px; }
-  .when-card-title.amber-text { color: #854F0B; }
-  .when-card-title.green-text { color: #0F6E56; }
-  .when-card-text { font-size: 11.5px; color: var(--color-text-secondary); line-height: 1.7; }
+  .outlook { margin-top: 24px; padding-top: 20px; border-top: 0.5px solid var(--color-border); }
+  .outlook-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 12px; }
+  .phases { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .phase { background: var(--color-bg); border: 0.5px solid var(--color-border); border-radius: var(--radius-md); padding: 10px 12px; }
+  .phase-head { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+  .phase-num { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+  .p1 { background: #E6F1FB; color: #185FA5; } .p2 { background: #E1F5EE; color: #0F6E56; }
+  .p3 { background: #EEEDFE; color: #534AB7; } .p4 { background: #FAEEDA; color: #854F0B; }
+  .phase-title { font-size: 12px; font-weight: 500; color: var(--color-text-primary); }
+  .phase-desc { font-size: 11px; color: var(--color-text-secondary); line-height: 1.5; }
 
   .page-footer { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 0.5px solid var(--color-border); font-size: 12px; color: var(--color-text-tertiary); display: flex; justify-content: space-between; align-items: center; }
   .page-footer a { color: var(--color-text-secondary); text-decoration: none; border-bottom: 1px solid var(--color-border); }
@@ -171,48 +132,23 @@
   @media (max-width: 640px) {
     .cols { grid-template-columns: 1fr; }
     .pane { height: 420px; }
-    .narr-cols, .when-cols { grid-template-columns: 1fr; }
+    .phases { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 <div class="page">
 
-  <div class="page-header">
-    <h1>ai-setup-patterns</h1>
-    <p>Where monolithic AI assistants hit their limits in production — and what to build instead. <a href="https://github.com/felipefaraone/ai-setup-patterns">Read the full analysis →</a></p>
+  <div class="intro">
+    <div class="intro-title">ai-setup-patterns — live demo</div>
+    <div class="intro-sub">Companion to the <a href="https://github.com/felipefaraone/ai-setup-patterns">GitHub repository</a>. Same setup task, two architectures. Interact with both sides and see the difference in complexity, speed, and where responsibility lives.</div>
   </div>
-
-  <!-- Product context -->
-  <div class="product-ctx">
-    <div class="product-ctx-title">The product context</div>
-    <p>You're looking at a <span class="highlight">B2B lead distribution platform</span>. Buyers (insurance companies, lenders, agencies) connect their systems to receive leads via webhooks. Each buyer needs a setup flow that involves configuring an endpoint, mapping their data schema to yours, and setting pricing and routing rules.</p>
-    <p>This is a real pattern from production. The monolithic assistant was the <span class="highlight">MVP that shipped</span> — it works, users adopted it, and it delivered real results. But production telemetry revealed structural limitations. The embedded helper pattern is the <span class="highlight">strategic pivot</span> that emerged from that data.</p>
-    <p>The setup flow has <span class="highlight">8 phases</span>, uses <span class="highlight">MCP tools</span> to call backend APIs, and renders structured UI with Adaptive Cards. Walk through both approaches to see why the architecture needs to evolve:</p>
-    <div class="product-flow">
-      <span class="flow-step">Connect endpoint</span>
-      <span class="flow-arrow">→</span>
-      <span class="flow-step">Select lead type</span>
-      <span class="flow-arrow">→</span>
-      <span class="flow-step">Parse schema</span>
-      <span class="flow-arrow">→</span>
-      <span class="flow-step">Map fields</span>
-      <span class="flow-arrow">→</span>
-      <span class="flow-step">Set pricing</span>
-      <span class="flow-arrow">→</span>
-      <span class="flow-step">Configure routing</span>
-      <span class="flow-arrow">→</span>
-      <span class="flow-step">Review</span>
-      <span class="flow-arrow">→</span>
-      <span class="flow-step">Activate</span>
-    </div>
-    <p>Walk through both approaches below. Pay attention to <span class="highlight">what the AI is actually doing</span> at each step — and what it shouldn't be.</p>
-  </div>
+  <div class="divider"></div>
 
   <div class="ctx">
     <div>
-      <div class="ctx-t">Same task, two architectures</div>
-      <div class="ctx-d">A sales team wants to receive leads from your platform. Connect their endpoint, match data fields, set pricing rules. Click through both to see how each approach handles it.</div>
+      <div class="ctx-t">Task: set up a webhook integration for a new buyer</div>
+      <div class="ctx-d">Connect their endpoint, map source fields to destination fields, set pricing and routing rules.</div>
     </div>
     <button class="rbtn" onclick="resetAll()">↺ Reset</button>
   </div>
@@ -252,96 +188,43 @@
     </div>
   </div>
 
-  <!-- Narrative: What you just saw -->
-  <div class="narrative" id="narrative-panel">
-    <div class="narrative-header">
-      <h2>Why the MVP needs to evolve</h2>
-      <div class="subtitle">The monolithic assistant shipped successfully and users adopted it. But production telemetry told a different story.</div>
-    </div>
-    <div class="narrative-body">
-      <div class="narr-section">
-        <div class="narr-label red">The root cause</div>
-        <div class="narr-text">
-          The monolithic pattern puts <strong>product logic inside a prompt</strong>. Sequencing, validation, state management, and UI rendering all live in the AI layer — invisible to your backend, untestable in any meaningful way, and sensitive to model behavior that changes without warning. The demo shows the visible symptom (slowness), but the deeper problems are reliability, testability, and fragility.
-        </div>
-      </div>
-
-      <div class="narr-divider"></div>
-
-      <div class="narr-cols">
-        <div class="narr-card red-border">
-          <div class="narr-card-title">Why the monolithic assistant breaks</div>
-          <div class="narr-card-list">
-            <strong>~52% of session time</strong> was the LLM generating UI — Adaptive Card JSON, table layouts, choice sets. Formatting work, not intelligence.<br><br>
-            <strong>Sequencing is probabilistic.</strong> The prompt tells the model "do phase 1, then phase 2." If the model skips a step or re-asks a question, there's no guardrail — just a longer prompt and a prayer.<br><br>
-            <strong>Validation is a suggestion.</strong> The model "decides" if input is valid. It might accept an invalid URL, skip a required field, or hallucinate a default value. Your backend finds out too late.<br><br>
-            <strong>You can't write a unit test.</strong> You run the flow, observe what happens, patch the wording, run it again. Each model update can change behavior across all 8 phases simultaneously.
-          </div>
-        </div>
-        <div class="narr-card green-border">
-          <div class="narr-card-title">Why embedded helpers avoid this</div>
-          <div class="narr-card-list">
-            <strong>The product owns the flow.</strong> Sequencing is code. Validation is deterministic. State lives in your database. The UI renders in milliseconds because it's a product screen, not a generated card.<br><br>
-            <strong>AI has a narrow contract.</strong> One input (a JSON schema), one output (suggested field mappings). No sequencing responsibility. No UI generation. No state management.<br><br>
-            <strong>Failures are contained.</strong> If the field mapping helper returns bad suggestions, the user sees it immediately and edits. The rest of the flow is unaffected.<br><br>
-            <strong>Each helper is testable.</strong> Given input X, does the output meet expectations? You can write regression tests, measure accuracy, and swap models without touching the flow.
-          </div>
-        </div>
-      </div>
-
-      <div class="narr-divider"></div>
-
-      <div class="narr-section">
-        <div class="narr-label gray">What the AI actually did in each approach</div>
-        <div class="narr-text">
-          <strong>Monolithic:</strong> The AI ran at every step — collecting input, deciding what to ask next, generating UI cards, validating responses, managing state across 8 phases with context summarization between them. Twenty exchanges, seven to ten minutes, with the model doing work that had nothing to do with intelligence.<br><br>
-          <strong>Helpers:</strong> The product rendered the setup form. The user filled in connection details and routing rules through standard UI. When field mapping was needed — the one step that requires interpretation — a helper analyzed the posting instructions and returned suggestions in 2.1 seconds. The AI ran once, for the task it was good at.
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Comparison table -->
   <div class="compare" id="compare-panel">
-    <div class="compare-title">Side-by-side comparison</div>
+    <div class="compare-title">What the numbers actually mean</div>
     <table class="ctable">
       <thead>
-        <tr>
-          <th></th>
-          <th>Monolithic assistant</th>
-          <th>Embedded helpers</th>
-        </tr>
+        <tr><th></th><th>Monolithic assistant</th><th>Embedded helpers</th></tr>
       </thead>
       <tbody>
         <tr><td>Total time</td><td class="bad">~8 min</td><td class="good">~2 min</td></tr>
         <tr><td>User interactions</td><td class="bad">20 exchanges</td><td class="good">3 steps</td></tr>
         <tr><td>Where AI ran</td><td class="bad">Every single step</td><td class="good">Once, for 2.1s</td></tr>
-        <tr><td>What AI actually did</td><td class="bad">Sequencing + UI + validation + execution</td><td class="good">Field interpretation only</td></tr>
-        <tr><td>Who controls sequencing</td><td class="bad">The prompt</td><td class="good">The product (code)</td></tr>
-        <tr><td>Who controls validation</td><td class="bad">The prompt (probabilistic)</td><td class="good">The product (deterministic)</td></tr>
+        <tr><td>Who controls sequencing</td><td class="bad">The prompt</td><td class="good">The product</td></tr>
+        <tr><td>Who controls validation</td><td class="bad">The prompt</td><td class="good">The product</td></tr>
         <tr><td>What breaks if model updates</td><td class="bad">The entire flow</td><td class="good">One helper, one task</td></tr>
         <tr><td>Can you write a unit test?</td><td class="bad">No</td><td class="good">Yes — input → output</td></tr>
         <tr><td>Failure surface</td><td class="bad">Any of 8 phases, any step</td><td class="good">One task, one place</td></tr>
-        <tr><td>Hallucination risk</td><td class="bad">High — model owns every decision</td><td class="good">Low — model suggests, product validates</td></tr>
       </tbody>
     </table>
   </div>
 
-  <!-- When to use each -->
-  <div class="when-section" id="when-panel">
-    <div class="when-title">MVP → Production: when each pattern fits</div>
-    <div class="when-cols">
-      <div class="when-card">
-        <div class="when-card-title amber-text">Monolithic assistant (MVP)</div>
-        <div class="when-card-text">
-          The right choice for <strong>proving the concept</strong>. It shipped, users adopted it, leadership saw the value. You learn things from production that you can't learn from planning. The failure modes only become visible after you ship — under real usage, with real data, and models that behave differently on different days. That's not a mistake. That's the MVP doing its job.
-        </div>
+  <div class="outlook">
+    <div class="outlook-title">Where this goes — the helper pattern as phase one</div>
+    <div class="phases">
+      <div class="phase">
+        <div class="phase-head"><span class="phase-num p1">Phase 1</span><span class="phase-title">Helpers prove value</span></div>
+        <div class="phase-desc">One task. One helper. Measurable outcome. Field mapping, schema parsing, posting instructions — each solved in context.</div>
       </div>
-      <div class="when-card">
-        <div class="when-card-title green-text">Embedded helpers (the pivot)</div>
-        <div class="when-card-text">
-          What production data says to build next. The MVP proved the value of AI in the setup flow. The pivot preserves that value while fixing <strong>reliability, testability, and performance</strong>. Helpers that are too narrow don't deliver enough value. Helpers in the wrong part of the flow don't get used. But when a helper fails, it fails in one place, in a way you can observe and fix.
-        </div>
+      <div class="phase">
+        <div class="phase-head"><span class="phase-num p2">Phase 2</span><span class="phase-title">Helpers become a reusable AI layer</span></div>
+        <div class="phase-desc">The same field mapping helper gets called from any integration screen. The investment compounds instead of being rebuilt per use case.</div>
+      </div>
+      <div class="phase">
+        <div class="phase-head"><span class="phase-num p3">Phase 3</span><span class="phase-title">Assistant becomes a routing layer</span></div>
+        <div class="phase-desc">The assistant understands intent and routes the user to the right screen and the right helper. It coordinates — it doesn't execute.</div>
+      </div>
+      <div class="phase">
+        <div class="phase-head"><span class="phase-num p4">Phase 4</span><span class="phase-title">System becomes proactive</span></div>
+        <div class="phase-desc">With helpers running and generating data, the product surfaces insights without being asked. The AI shifts from reactive to ambient.</div>
       </div>
     </div>
   </div>
@@ -357,44 +240,36 @@
 const sc=[
   {r:'ai',t:"Hi! I'll guide you through the full setup. What's the name of this integration?",ms:3200,ph:'Phase 1 of 8',bar:12,pre:'Acme Webhook'},
   {r:'u',t:'Acme Webhook'},
-  {r:'ai',t:"Got it. What's the destination webhook URL?",ms:4100,ph:'Phase 1 of 8',bar:12,pre:'https://acme.io/leads',
-    fn:'AI is deciding what to ask next. In production, the model occasionally skips this question or asks it out of order.'},
+  {r:'ai',t:"Got it. What's the destination webhook URL?",ms:4100,ph:'Phase 1 of 8',bar:12,pre:'https://acme.io/leads'},
   {r:'u',t:'https://acme.io/leads'},
-  {r:'ai',t:'Loading your lead types...',ms:17900,slow:true,sl:'18s — LLM generating lead type selector card',ph:'Phase 2 of 8',bar:25,pre:'Mortgage leads',
-    fn:'The model is building an Adaptive Card to show lead types. The product already has this list — it could render a dropdown in <100ms.'},
+  {r:'ai',t:'Loading your lead types...',ms:17900,slow:true,sl:'18s — LLM generating lead type selector card',ph:'Phase 2 of 8',bar:25,pre:'Mortgage leads'},
   {r:'u',t:'Mortgage leads'},
   {r:'ai',t:'Delivery schedule — 24/7 or specific hours?',ms:5100,ph:'Phase 3 of 8',bar:37,pre:'24/7'},
   {r:'u',t:'24/7'},
-  {r:'ai',t:'Paste your JSON schema so I can map your fields.',ms:6800,ph:'Phase 3 of 8',bar:37,pre:'{ "first_name": "...", "loan_amount": 250000 }',
-    fn:'No input validation. If the user pastes invalid JSON, the model might silently accept it or hallucinate a correction.'},
-  {r:'u',t:w{ "first_name": "...", "loan_amount": 250000 }'},
-  {r:'ai',t:'Generating field mapping preview...',ms:51800,slow:true,sl:'52s — LLM building mapping card (~4,000 output tokens)',ph:'Phase 3 of 8',bar:37,pre:'Confirmed',
-    fn:'52% of total session time spent here. The model is generating a formatted table — pure formatting, zero intelligence. The product could render this mapping UI instantly.'},
+  {r:'ai',t:'Paste your JSON schema so I can map your fields.',ms:6800,ph:'Phase 3 of 8',bar:37,pre:'{ "first_name": "...", "loan_amount": 250000 }'},
+  {r:'u',t:'{ "first_name": "...", "loan_amount": 250000 }'},
+  {r:'ai',t:'Generating field mapping preview...',ms:51800,slow:true,sl:'52s — LLM building mapping card (~4,000 output tokens)',ph:'Phase 3 of 8',bar:37,pre:'Confirmed'},
   {r:'u',t:'Confirmed'},
   {r:'ai',t:'Price per lead?',ms:4400,ph:'Phase 5 of 8',bar:62,pre:'$200'},
   {r:'u',t:'$200'},
-  {r:'ai',t:'Exclusive or shared routing?',ms:3800,ph:'Phase 5 of 8',bar:62,pre:'Exclusive',
-    fn:'Sequencing controlled by the prompt. If the model decides to skip pricing or reorder these questions, there\'s no guardrail — just a longer prompt.'},
+  {r:'ai',t:'Exclusive or shared routing?',ms:3800,ph:'Phase 5 of 8',bar:62,pre:'Exclusive'},
   {r:'u',t:'Exclusive'},
   {r:'ai',t:'Which states should this account target?',ms:9400,ph:'Phase 5 of 8',bar:62,pre:'California, Texas'},
   {r:'u',t:'California, Texas'},
-  {r:'ai',t:'Building criteria suggestions...',ms:45400,slow:true,sl:'45s — LLM building criteria card (~2,500 output tokens)',ph:'Phase 5 of 8',bar:62,pre:'Skip',
-    fn:'Another long generation cycle. The model is formatting output, not making decisions. Each of these slow steps compounds user frustration.'},
+  {r:'ai',t:'Building criteria suggestions...',ms:45400,slow:true,sl:'45s — LLM building criteria card (~2,500 output tokens)',ph:'Phase 5 of 8',bar:62,pre:'Skip'},
   {r:'u',t:'Skip'},
-  {r:'ai',t:'Done. Acme Webhook is now active.',ms:2800,ph:'Phase 8 of 8',bar:100,last:true,
-    fn:'20 exchanges later. If any earlier step hallucinated or lost context across summarization boundaries, this "done" might not match reality.'},
+  {r:'ai',t:'Done. Acme Webhook is now active.',ms:2800,ph:'Phase 8 of 8',bar:100,last:true},
 ];
 
 let mIdx=0,mBusy=false,mTimer=null;
 
-function addBub(role,text,ms,slow,sl,fn){
+function addBub(role,text,ms,slow,sl){
   const c=document.getElementById('m-chat');
   const b=document.createElement('div');b.className='bub '+role;b.textContent=text;
   if(ms&&role==='ai'){
     const t=document.createElement('div');t.className='bt'+(slow?' warn':'');
     t.textContent=(ms/1000).toFixed(1)+'s response time';b.appendChild(t);
     if(slow){const s=document.createElement('div');s.className='stag';s.textContent=sl;b.appendChild(s);}
-    if(fn){const f=document.createElement('div');f.className='fail-note';f.textContent=fn;b.appendChild(f);}
   }
   c.appendChild(b);c.scrollTop=c.scrollHeight;
 }
@@ -419,7 +294,7 @@ function mSend(){
   const nx=sc[mIdx];
   mTimer=setTimeout(()=>{
     if(document.getElementById('tyi'))c.removeChild(ty);
-    addBub('ai',nx.t,nx.ms,nx.slow,nx.sl,nx.fn);
+    addBub('ai',nx.t,nx.ms,nx.slow,nx.sl);
     if(nx.ph)document.getElementById('m-tag').textContent=nx.ph;
     if(nx.bar)document.getElementById('m-bar').style.width=nx.bar+'%';
     mIdx++;mBusy=false;
@@ -437,17 +312,12 @@ let hDone=false;
 function checkBoth(){
   if(hDone&&document.getElementById('m-res').classList.contains('show')){
     document.getElementById('pane-h').classList.add('winner');
-    document.getElementById('narrative-panel').classList.add('show');
     document.getElementById('compare-panel').classList.add('show');
-    document.getElementById('when-panel').classList.add('show');
   }
 }
 
-function fv(label,val,mono){
-  return `<div class="frow"><span class="flabel">${label}</span><span class="fval${mono?' mono':''}">${val}</span></div>`;
-}
-
-function setFooter(html){document.getElementById('h-footer').innerHTML=html;}
+function fv(l,v,m){return`<div class="frow"><span class="flabel">${l}</span><span class="fval${m?' mono':''}">${v}</span></div>`;}
+function setFooter(h){document.getElementById('h-footer').innerHTML=h;}
 
 function renderS1(){
   document.getElementById('h-tag').textContent='Step 1 of 3';
@@ -456,9 +326,6 @@ function renderS1(){
   const s=document.createElement('div');s.className='steps';
   s.innerHTML='<div class="sp act">1 Endpoint</div><div class="sp">2 Field mapping</div><div class="sp">3 Routing rules</div>';
   b.appendChild(s);
-  const n=document.createElement('div');n.className='prod-note';
-  n.textContent='Product renders this form. No AI needed — standard UI with deterministic validation.';
-  b.appendChild(n);
   const fc=document.createElement('div');fc.className='fcard';
   fc.innerHTML=`<div class="fct">Connection details</div>${fv('Name','Acme Webhook')}${fv('Endpoint URL','https://acme.io/leads',true)}${fv('Content type','JSON')}${fv('Lead type','Mortgage leads')}`;
   b.appendChild(fc);
@@ -472,9 +339,6 @@ function renderS2(){
   const s=document.createElement('div');s.className='steps';
   s.innerHTML='<div class="sp done">1 Endpoint</div><div class="sp act">2 Field mapping</div><div class="sp">3 Routing rules</div>';
   b.appendChild(s);
-  const n=document.createElement('div');n.className='prod-note';
-  n.textContent='This is the one step where AI adds value — interpreting a schema requires intelligence, not just formatting.';
-  b.appendChild(n);
   const fc=document.createElement('div');fc.className='fcard';
   fc.innerHTML=`<div class="fct">Posting instructions</div>${fv('JSON schema','{ "first_name": "John", "loan_amount": 250000, "state": "CA", "email": "j@j.com" }',true)}`;
   b.appendChild(fc);
@@ -487,7 +351,7 @@ function runHelper(){
   hb.style.display='block';hb.className='hbox';
   hb.style.background='#FAEEDA';hb.style.borderColor='#EF9F27';
   hb.innerHTML='<div class="hbox-head"><div class="hdot" style="background:#EF9F27"></div><div class="htitle" style="color:#854F0B">Analyzing posting instructions...</div></div>';
-  setFooter('<span style="font-size:11px;color:#9b9a96;">Running field mapping helper — narrow contract: JSON in, mappings out</span>');
+  setFooter('<span style="font-size:11px;color:#9b9a96;">Running field mapping helper...</span>');
   setTimeout(()=>{
     hb.style.background='#E1F5EE';hb.style.borderColor='#5DCAA5';
     hb.innerHTML='<div class="hbox-head"><div class="hdot"></div><div class="htitle">Field mapping helper — 4 of 4 matched</div><div class="htime">2.1s</div></div>';
@@ -496,7 +360,7 @@ function runHelper(){
       r.innerHTML=`<div class="mc">${s}</div><div class="ma">→</div><div class="mc">${d}</div><div class="chi">matched</div>`;
       hb.appendChild(r);
     });
-    const n=document.createElement('div');n.className='hnote';n.textContent='AI suggested, user reviews. If a mapping is wrong, edit it here — the product validates before saving.';
+    const n=document.createElement('div');n.className='hnote';n.textContent='Review and adjust if needed. Accepted mappings apply on save.';
     hb.appendChild(n);
     document.getElementById('h-body').scrollTop=9999;
     setFooter('<button class="btn-ghost" onclick="renderS2()">Edit</button><button class="btn-pri" onclick="renderS3()">Accept and continue →</button>');
@@ -510,9 +374,6 @@ function renderS3(){
   const s=document.createElement('div');s.className='steps';
   s.innerHTML='<div class="sp done">1 Endpoint</div><div class="sp done">2 Field mapping</div><div class="sp act">3 Routing rules</div>';
   b.appendChild(s);
-  const n=document.createElement('div');n.className='prod-note';
-  n.textContent='Back to product UI. Pricing, routing, and targeting are standard form fields — no AI needed.';
-  b.appendChild(n);
   const hd=document.createElement('div');hd.className='hbox';
   hd.innerHTML='<div class="hbox-head"><div class="hdot"></div><div class="htitle">4 field mappings accepted</div></div>';
   b.appendChild(hd);
@@ -554,21 +415,18 @@ function resetAll(){
   document.getElementById('m-res').classList.remove('show');
   document.getElementById('h-res').classList.remove('show');
   document.getElementById('pane-h').classList.remove('winner');
-  document.getElementById('narrative-panel').classList.remove('show');
   document.getElementById('compare-panel').classList.remove('show');
-  document.getElementById('when-panel').classList.remove('show');
   setInput(null);
-  const s0=sc[0];addBub('ai',s0.t,s0.ms,false,null,null);
+  const s0=sc[0];addBub('ai',s0.t,s0.ms);
   document.getElementById('m-tag').textContent=s0.ph;
   mIdx=1;setInput(sc[1].t);
   renderS1();
 }
 
-const s0=sc[0];addBub('ai',s0.t,s0.ms,false,null,null);
+const s0=sc[0];addBub('ai',s0.t,s0.ms);
 document.getElementById('m-tag').textContent=s0.ph;
 mIdx=1;setInput(sc[1].t);
 renderS1();
 </script>
 </body>
 </html>
-
