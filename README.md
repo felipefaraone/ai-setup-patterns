@@ -2,6 +2,8 @@
 
 **Where monolithic AI assistants hit their limits in production — and what to build instead.**
 
+**[→ View the interactive demo](https://felipefaraone.github.io/ai-setup-patterns/)**
+
 ---
 
 ## Background
@@ -137,4 +139,5 @@ That's the real reason to make the switch.
 
 Felipe Faraone — Senior Product Manager  
 [felipefaraone.com](https://felipefaraone.com) · [LinkedIn](https://linkedin.com/in/felipefaraone) · [GitHub](https://github.com/felipefaraone)
+
 
