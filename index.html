@@ -129,8 +129,23 @@
   .page-footer { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 0.5px solid var(--color-border); font-size: 12px; color: var(--color-text-tertiary); display: flex; justify-content: space-between; align-items: center; }
   .page-footer a { color: var(--color-text-secondary); text-decoration: none; border-bottom: 1px solid var(--color-border); }
 
+  .explain { margin-bottom: 14px; }
+  .explain-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .explain-card { background: var(--color-bg); border: 0.5px solid var(--color-border); border-radius: var(--radius-md); padding: 14px 16px; }
+  .explain-mono { border-left: 3px solid #EF9F27; }
+  .explain-helper { border-left: 3px solid #1D9E75; }
+  .explain-icon { margin-bottom: 8px; }
+  .explain-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: .05em; color: var(--color-text-tertiary); margin-bottom: 2px; }
+  .explain-title { font-size: 13px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 6px; }
+  .explain-desc { font-size: 12px; color: var(--color-text-secondary); line-height: 1.55; margin-bottom: 10px; }
+  .explain-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .etag { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 99px; }
+  .etag-warn { background: #FAEEDA; color: #854F0B; }
+  .etag-good { background: #E1F5EE; color: #0F6E56; }
+
   @media (max-width: 640px) {
     .cols { grid-template-columns: 1fr; }
+    .explain-cols { grid-template-columns: 1fr; }
     .pane { height: 420px; }
     .phases { grid-template-columns: 1fr; }
   }
@@ -144,6 +159,37 @@
     <div class="intro-sub">Companion to the <a href="https://github.com/felipefaraone/ai-setup-patterns">GitHub repository</a>. Same setup task, two architectures. Interact with both sides and see the difference in complexity, speed, and where responsibility lives.</div>
   </div>
   <div class="divider"></div>
+
+  <div class="explain">
+    <div class="explain-cols">
+      <div class="explain-card explain-mono">
+        <div class="explain-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#BA7517" stroke-width="1.2"/><path d="M10 5v6M7 8l3 3 3-3" stroke="#BA7517" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="15" r="1" fill="#BA7517"/></svg>
+        </div>
+        <div class="explain-label">Left side</div>
+        <div class="explain-title">The AI owns the entire flow</div>
+        <div class="explain-desc">Every step goes through the model — eight phases, multiple round trips, each one a chance for the model to skip, stall, or hallucinate. Sequencing, validation, and UI rendering all live inside the prompt.</div>
+        <div class="explain-tags">
+          <span class="etag etag-warn">8 phases</span>
+          <span class="etag etag-warn">20 exchanges</span>
+          <span class="etag etag-warn">~8 min</span>
+        </div>
+      </div>
+      <div class="explain-card explain-helper">
+        <div class="explain-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#1D9E75" stroke-width="1.2"/><path d="M6.5 10.5l2.5 2.5 5-5" stroke="#1D9E75" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="explain-label">Right side</div>
+        <div class="explain-title">The product owns the flow</div>
+        <div class="explain-desc">The AI runs once — only when the user needs field mapping analyzed. Everything else is a normal product screen. Faster, testable, and predictable.</div>
+        <div class="explain-tags">
+          <span class="etag etag-good">3 steps</span>
+          <span class="etag etag-good">1 AI call</span>
+          <span class="etag etag-good">~2 min</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="ctx">
     <div>
@@ -431,3 +477,4 @@ renderS1();
 </script>
 </body>
 </html>
+
