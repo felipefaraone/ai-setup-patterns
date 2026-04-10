@@ -10,7 +10,7 @@
 
 MCP (Model Context Protocol) is an open standard that lets AI models call external tools through a structured interface. In a setup flow, this means the AI can create records, fetch data, and execute configuration steps — not just talk about them.
 
-This repository documents what I learned leading the product strategy for a production MCP-based AI assistant in a B2B SaaS environment. I worked closely with a product designer and the engineering team — they built the infrastructure and interaction design, while I owned the product architecture, prompt strategy, and the decision framework for what to do when production data told us to change direction.
+This repository documents what I learned shipping a production MCP-based AI assistant in a B2B SaaS environment. I led the product management end to end — discovery, delivery, QA, and the decision framework for what to do when production data told us to change course. I worked hands-on with our product designer on prompt engineering and prompt strategy, and collaboratively with the product designer and engineering team who built the infrastructure and interaction design.
 
 ---
 
