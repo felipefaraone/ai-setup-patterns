@@ -2,7 +2,7 @@
 
 **Where monolithic AI assistants hit their limits in production — and what to build instead.**
 
-**[→ View the interactive demo](https://felipefaraone.github.io/ai-setup-patterns/)**
+[→ View the interactive demo](https://felipefaraone.github.io/ai-setup-patterns)
 
 ---
 
@@ -50,25 +50,22 @@ That's the structural problem with the monolithic assistant pattern.
 
 ## Where the architecture reaches its ceiling
 
-**The prompt does work the product should do.**
-Sequencing, validation, and state management belong in your application layer. When they live in a prompt, you've replaced deterministic code with probabilistic inference. The assistant might skip a required step, re-ask a question it already answered, or lose state across a context summarization boundary.
+**The prompt does work the product should do.** Sequencing, validation, and state management belong in your application layer. When they live in a prompt, you've replaced deterministic code with probabilistic inference. The assistant might skip a required step, re-ask a question it already answered, or lose state across a context summarization boundary.
 
-**Reliability degrades with complexity.**
-Each additional phase or branching path increases the surface area for the model to deviate. A flow with 8 phases and 4 delivery types has far more failure modes than 8 separate, contained interactions.
+**Reliability degrades with complexity.** Each additional phase or branching path increases the surface area for the model to deviate. A flow with 8 phases and 4 delivery types has far more failure modes than 8 separate, contained interactions.
 
-**Testing is expensive and non-deterministic.**
-You can't unit test a prompt. You run it, observe what happens, patch the wording, run it again. At scale this becomes dozens of manual runs per change, with results that vary between model versions and between calls to the same model.
+**Testing is expensive and non-deterministic.** You can't unit test a prompt. You run it, observe what happens, patch the wording, run it again. At scale this becomes dozens of manual runs per change, with results that vary between model versions and between calls to the same model.
 
-**Performance scales with output tokens, not backend complexity.**
-The slowest operations are almost always UI generation — the model building structured JSON for cards, tables, and choice sets. Formatting work the LLM is slow at and bad at.
+**Performance scales with output tokens, not backend complexity.** The slowest operations are almost always UI generation — the model building structured JSON for cards, tables, and choice sets. Formatting work the LLM is slow at and bad at.
 
 ---
 
 ## The embedded helper pattern
 
-Instead of one assistant that owns everything, you build focused helpers embedded directly in the product UI — at the point where that specific task is relevant.
+Instead of one assistant that owns everything, you build focused helpers that own one task each — and expose them as backend services with clean contracts.
 
 Each helper has a narrow contract:
+
 - One input type (a JSON payload, a text description, a field list)
 - One output type (a suggested mapping, a parsed config, a set of field proposals)
 - Zero responsibility for flow sequencing, state, or validation
@@ -90,6 +87,37 @@ User → Product UI → [AI owns: one specific interpretation task]
 
 **Testability improves** because each helper can be evaluated independently: given input X, does the output meet expectations?
 
+### An important clarification: helpers are services, not UI agents
+
+The helpers don't interact with the UI. They don't manipulate the DOM, click buttons, or drive the frontend. They are backend services that the UI calls.
+
+The product screen renders a form. When the user reaches field mapping, the screen calls `prepare_webhook_mapping` behind the scenes and renders the result. The helper returns structured data; the product decides how to display it. No frontend rewrite needed — just the UI making an API call to the helper at the right moment.
+
+This distinction matters because it means the same helper can serve multiple consumers without any changes to the tool itself.
+
+---
+
+## Two consumption paths, same tools
+
+The strongest argument for building helpers with clean contracts is that they unlock two paths simultaneously:
+
+**Internal: product UI calls the helper directly**
+The user is on the Delivery Method configuration screen. They paste posting instructions. The product calls `prepare_webhook_mapping`, gets back suggested mappings, and renders them inline. The user reviews and confirms. No chat involved.
+
+**External: agents connect via MCP and call the same tools**
+An external agent (Claude with MCP connectors, a custom automation script, or a third-party integration) connects to the same MCP server and calls the same `prepare_webhook_mapping` tool. No internal chatbot flow required. The MCP standard makes these tools available to any agent that speaks the protocol.
+
+```
+Same helper, two paths:
+
+Internal:  Product UI → prepare_webhook_mapping → render in screen
+External:  Agent (Claude, GPT, custom) → MCP → prepare_webhook_mapping → structured response
+```
+
+This is what makes the pattern composable. You're not building features for one interface — you're building capabilities that any consumer can use. The internal product uses them. External agents use them. The monolithic assistant, if it stays around, uses them too — but now as a thin orchestration layer calling the same tools everyone else calls.
+
+If you've used Claude with MCP connectors (Atlassian, GitHub, Google Drive), you've already seen this model working. The value isn't in the chat UI — it's in the tools behind it.
+
 ---
 
 ## What this looks like in practice
@@ -98,10 +126,11 @@ A user wants to set up a webhook integration.
 
 **Monolithic:** The assistant carries the full flow in chat. Eight phases. Seven context summarizations. Forty-five assistant messages. Seven to ten minutes. When it fails, it can fail anywhere.
 
-**Helpers:** The assistant understands intent, collects minimal context, and opens the webhook configuration screen. The product renders the form. When the user reaches field mapping, a helper is already there — embedded in that screen, ready to take their posting instructions and return suggestions. The assistant is a routing layer. The helpers do the work.
+**Helpers (internal path):** The assistant understands intent, collects minimal context, and opens the webhook configuration screen. The product renders the form. When the user reaches field mapping, a helper is already there — embedded in that screen, ready to take their posting instructions and return suggestions. The assistant is a routing layer. The helpers do the work.
+
+**Helpers (external path):** An external agent connects via MCP. It calls `create_delivery_method` with the right parameters. When it needs field mapping, it calls `prepare_webhook_mapping`. No chat UI, no phases, no context summarization. Just tools with clean contracts.
 
 ---
-
 
 ## Why this matters for the industry
 
@@ -109,14 +138,13 @@ The monolithic assistant was the right first step. It validated the core premise
 
 This mirrors a broader pattern across B2B SaaS: companies like Notion, Linear, and Figma have moved from single AI features to distributed, context-aware helpers embedded at the point of need. The insight is the same — narrow scope, high precision, and product-layer orchestration outperform monolithic AI ownership as complexity grows.
 
+The addition of MCP as an external API surface extends this pattern further. The same tools that power internal helpers become available to any agent that speaks the protocol — making the product not just AI-assisted, but AI-accessible.
+
 The embedded helper pattern has its own design challenges. Helpers that are too narrow don't deliver enough value. Helpers in the wrong part of the flow don't get used. But each helper can be evaluated, measured, and improved independently — which is what makes the architecture scalable.
 
 ---
 
 ## Author
 
-Felipe Faraone — Senior Product Manager  
+Felipe Faraone — Senior Product Manager
 [felipefaraone.com](https://felipefaraone.com) · [LinkedIn](https://linkedin.com/in/felipefaraone) · [GitHub](https://github.com/felipefaraone)
-
-
-
