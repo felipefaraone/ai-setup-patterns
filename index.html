@@ -35,9 +35,11 @@
   .rbtn:hover { background: var(--color-bg-secondary); }
 
   .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .pane { border-radius: var(--radius-lg); border: 0.5px solid var(--color-border); background: var(--color-bg-secondary); display: flex; flex-direction: column; height: 480px; }
+  .pane { border-radius: var(--radius-lg); border: 1px solid var(--color-border-secondary); background: var(--color-bg-secondary); display: flex; flex-direction: column; height: 480px; box-shadow: 0 2px 12px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03); }
   .pane.winner { border: 1.5px solid #1D9E75; }
   .phead { padding: 10px 14px; border-bottom: 0.5px solid var(--color-border); background: var(--color-bg); display: flex; justify-content: space-between; align-items: flex-start; border-radius: var(--radius-lg) var(--radius-lg) 0 0; flex-shrink: 0; }
+  .ibadge { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; padding: 2px 7px; border-radius: 4px; background: #E6F1FB; color: #185FA5; display: inline-flex; align-items: center; gap: 3px; margin-top: 2px; }
+  .ibadge svg { flex-shrink: 0; }
   .ptitle { font-size: 13px; font-weight: 500; }
   .psub { font-size: 11px; color: var(--color-text-tertiary); margin-top: 1px; }
   .ptag { font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px; }
@@ -131,14 +133,16 @@
   .page-footer { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 0.5px solid var(--color-border); font-size: 12px; color: var(--color-text-tertiary); display: flex; justify-content: space-between; align-items: center; }
   .page-footer a { color: var(--color-text-secondary); text-decoration: none; border-bottom: 1px solid var(--color-border); }
 
-  .explain { margin-bottom: 14px; }
+  .explain { margin-bottom: 10px; }
+  .demo-cta { font-size: 11px; color: var(--color-text-tertiary); text-align: center; margin-bottom: 10px; letter-spacing: .01em; }
+  .demo-cta span { display: inline-flex; align-items: center; gap: 4px; background: var(--color-bg-secondary); padding: 3px 10px; border-radius: 99px; }
   .explain-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch; }
-  .explain-card { background: var(--color-bg-secondary); border-radius: var(--radius-md); padding: 10px 14px; display: flex; flex-direction: column; border-top: 2px solid transparent; }
-  .explain-mono { border-top-color: #EF9F27; }
-  .explain-helper { border-top-color: #1D9E75; }
+  .explain-card { background: transparent; border-radius: var(--radius-md); padding: 6px 10px; display: flex; flex-direction: column; border-top: none; border-left: 2px solid transparent; }
+  .explain-mono { border-left-color: #EF9F27; }
+  .explain-helper { border-left-color: #1D9E75; }
   .explain-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-  .explain-title { font-size: 12px; font-weight: 600; color: var(--color-text-primary); }
-  .explain-desc { font-size: 11px; color: var(--color-text-secondary); line-height: 1.5; flex: 1; }
+  .explain-title { font-size: 11px; font-weight: 600; color: var(--color-text-primary); }
+  .explain-desc { font-size: 11px; color: var(--color-text-tertiary); line-height: 1.5; flex: 1; }
   .explain-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
   .etag { font-size: 10px; font-weight: 500; padding: 1px 7px; border-radius: 99px; }
   .etag-warn { background: #FAEEDA; color: #854F0B; }
@@ -198,11 +202,13 @@
     </div>
   </div>
 
+  <div class="demo-cta"><span>↓ Click through both sides to compare</span></div>
+
   <div class="cols">
     <div class="pane" id="pane-m">
       <div class="phead">
         <div><div class="ptitle">Monolithic assistant</div><div class="psub">What shipped — the MVP</div></div>
-        <span class="ptag" id="m-tag">Phase 1 of 8</span>
+        <div style="text-align:right"><span class="ibadge"><svg width="8" height="8" viewBox="0 0 8 8" fill="none"><polygon points="1,0 7,4 1,8" fill="#185FA5"/></svg>Interactive</span><div class="ptag" id="m-tag" style="margin-top:3px">Phase 1 of 8</div></div>
       </div>
       <div class="pbar"><div class="pbarfill amber" id="m-bar" style="width:12%"></div></div>
       <div class="chat-scroll" id="m-chat"></div>
@@ -219,7 +225,7 @@
     <div class="pane" id="pane-h">
       <div class="phead">
         <div><div class="ptitle">Embedded helpers</div><div class="psub">What comes next — the pivot</div></div>
-        <span class="ptag" id="h-tag">Step 1 of 3</span>
+        <div style="text-align:right"><span class="ibadge"><svg width="8" height="8" viewBox="0 0 8 8" fill="none"><polygon points="1,0 7,4 1,8" fill="#185FA5"/></svg>Interactive</span><div class="ptag" id="h-tag" style="margin-top:3px">Step 1 of 3</div></div>
       </div>
       <div class="pbar"><div class="pbarfill teal" id="h-bar" style="width:33%"></div></div>
       <div class="prod-layout">
