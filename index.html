@@ -35,9 +35,12 @@
   .rbtn:hover { background: var(--color-bg-secondary); }
 
   .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .pane { border-radius: var(--radius-lg); border: 1px solid var(--color-border-secondary); background: var(--color-bg-secondary); display: flex; flex-direction: column; height: 480px; box-shadow: 0 2px 12px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03); }
+  .pane { border-radius: var(--radius-lg); border: 0.5px solid var(--color-border); background: var(--color-bg-secondary); display: flex; flex-direction: column; height: 480px; box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03); transition: box-shadow 0.2s; }
+  .pane:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.07), 0 8px 24px rgba(0,0,0,0.05); }
   .pane.winner { border: 1.5px solid #1D9E75; }
   .phead { padding: 10px 14px; border-bottom: 0.5px solid var(--color-border); background: var(--color-bg); display: flex; justify-content: space-between; align-items: flex-start; border-radius: var(--radius-lg) var(--radius-lg) 0 0; flex-shrink: 0; }
+  #pane-m .phead { border-top: 2px solid #EF9F27; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+  #pane-h .phead { border-top: 2px solid #1D9E75; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
   .ibadge { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; padding: 2px 7px; border-radius: 4px; background: #E6F1FB; color: #185FA5; display: inline-flex; align-items: center; gap: 3px; margin-top: 2px; }
   .ibadge svg { flex-shrink: 0; }
   .ptitle { font-size: 13px; font-weight: 500; }
@@ -134,8 +137,6 @@
   .page-footer a { color: var(--color-text-secondary); text-decoration: none; border-bottom: 1px solid var(--color-border); }
 
   .explain { margin-bottom: 10px; }
-  .demo-cta { font-size: 11px; color: var(--color-text-tertiary); text-align: center; margin-bottom: 10px; letter-spacing: .01em; }
-  .demo-cta span { display: inline-flex; align-items: center; gap: 4px; background: var(--color-bg-secondary); padding: 3px 10px; border-radius: 99px; }
   .explain-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch; }
   .explain-card { background: transparent; border-radius: var(--radius-md); padding: 6px 10px; display: flex; flex-direction: column; border-top: none; border-left: 2px solid transparent; }
   .explain-mono { border-left-color: #EF9F27; }
@@ -202,7 +203,6 @@
     </div>
   </div>
 
-  <div class="demo-cta"><span>↓ Click through both sides to compare</span></div>
 
   <div class="cols">
     <div class="pane" id="pane-m">
