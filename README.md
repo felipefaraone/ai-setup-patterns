@@ -102,28 +102,6 @@ A user wants to set up a webhook integration.
 
 ---
 
-## Repository structure
-
-```
-ai-setup-patterns/
-├── README.md
-├── patterns/
-│   ├── monolithic/              # reference implementation
-│   │   ├── system-prompt.md
-│   │   ├── action.md
-│   │   └── phases/
-│   └── helpers/                 # embedded helper implementations
-│       ├── field-mapper/
-│       ├── schema-parser/
-│       ├── schema-generator/
-│       └── criteria-drafter/
-├── evaluation/
-│   ├── test-protocol.md
-│   └── findings/
-└── diagrams/
-```
-
----
 
 ## Why this matters for the industry
 
