@@ -2469,7 +2469,7 @@ renderS1();
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ai-setup-patterns — live demo</title>
+<title>ai-setup-patterns: live demo</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -2626,7 +2626,7 @@ renderS1();
 <div class="page">
 
   <div class="intro">
-    <div class="intro-title">ai-setup-patterns — live demo</div>
+    <div class="intro-title">ai-setup-patterns: live demo</div>
     <div class="intro-sub">Companion to the <a href="https://github.com/felipefaraone/ai-setup-patterns">GitHub repository</a>. Same setup task, two architectures. Interact with both sides and see the difference in complexity, speed, and where responsibility lives.</div>
   </div>
   <div class="divider"></div>
@@ -2645,7 +2645,7 @@ renderS1();
       <div class="explain-card explain-mono">
         <div class="explain-head">
           <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#BA7517" stroke-width="1.5"/><path d="M10 5v6M7 8l3 3 3-3" stroke="#BA7517" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="15" r="1" fill="#BA7517"/></svg>
-          <div class="explain-title">Left — AI owns the entire flow</div>
+          <div class="explain-title">Left: AI owns the entire flow</div>
         </div>
         <div class="explain-desc">Every step through the model. Eight phases, multiple round trips, each a chance to skip, stall, or hallucinate.</div>
         <div class="explain-tags">
@@ -2657,7 +2657,7 @@ renderS1();
       <div class="explain-card explain-helper">
         <div class="explain-head">
           <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#1D9E75" stroke-width="1.5"/><path d="M6.5 10.5l2.5 2.5 5-5" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <div class="explain-title">Right — Product owns the flow</div>
+          <div class="explain-title">Right: Product owns the flow</div>
         </div>
         <div class="explain-desc">AI runs once for field mapping. Everything else is a normal product screen. Faster, testable, predictable.</div>
         <div class="explain-tags">
@@ -2673,7 +2673,7 @@ renderS1();
   <div class="cols">
     <div class="pane" id="pane-m">
       <div class="phead">
-        <div><div class="ptitle">Monolithic assistant</div><div class="psub">What shipped — the MVP</div></div>
+        <div><div class="ptitle">All-in-one assistant</div><div class="psub">What shipped, the MVP</div></div>
         <div style="text-align:right"><span class="ibadge"><svg width="8" height="8" viewBox="0 0 8 8" fill="none"><polygon points="1,0 7,4 1,8" fill="#185FA5"/></svg>Interactive</span><div class="ptag" id="m-tag" style="margin-top:3px">Phase 1 of 8</div></div>
       </div>
       <div class="pbar"><div class="pbarfill amber" id="m-bar" style="width:12%"></div></div>
@@ -2690,7 +2690,7 @@ renderS1();
 
     <div class="pane" id="pane-h">
       <div class="phead">
-        <div><div class="ptitle">Embedded helpers</div><div class="psub">What comes next — the pivot</div></div>
+        <div><div class="ptitle">Embedded helpers</div><div class="psub">What comes next, the pivot</div></div>
         <div style="text-align:right"><span class="ibadge"><svg width="8" height="8" viewBox="0 0 8 8" fill="none"><polygon points="1,0 7,4 1,8" fill="#185FA5"/></svg>Interactive</span><div class="ptag" id="h-tag" style="margin-top:3px">Step 1 of 3</div></div>
       </div>
       <div class="pbar"><div class="pbarfill teal" id="h-bar" style="width:33%"></div></div>
@@ -2709,7 +2709,7 @@ renderS1();
     <div class="compare-title">What the numbers actually mean</div>
     <table class="ctable">
       <thead>
-        <tr><th></th><th>Monolithic assistant</th><th>Embedded helpers</th></tr>
+        <tr><th></th><th>All-in-one assistant</th><th>Embedded helpers</th></tr>
       </thead>
       <tbody>
         <tr><td>Total time</td><td class="bad">~8 min</td><td class="good">~2 min</td></tr>
@@ -2718,21 +2718,21 @@ renderS1();
         <tr><td>Who controls sequencing</td><td class="bad">The prompt</td><td class="good">The product</td></tr>
         <tr><td>Who controls validation</td><td class="bad">The prompt</td><td class="good">The product</td></tr>
         <tr><td>What breaks if model updates</td><td class="bad">The entire flow</td><td class="good">One helper, one task</td></tr>
-        <tr><td>Can you write a unit test?</td><td class="bad">No</td><td class="good">Yes — input → output</td></tr>
+        <tr><td>Can you write a unit test?</td><td class="bad">No</td><td class="good">Yes, input → output</td></tr>
         <tr><td>Failure surface</td><td class="bad">Any of 8 phases, any step</td><td class="good">One task, one place</td></tr>
       </tbody>
     </table>
   </div>
 
   <div class="outlook">
-    <div class="outlook-title">What’s next — from MVP (Phase 0) to production</div>
-    <div style="font-size:12px;color:#6b6a66;margin-bottom:12px;line-height:1.6;">The monolithic assistant is <strong style="color:#1a1a18;">Phase 0 — the MVP that shipped</strong>. It proved the concept and revealed what needs to change. Here’s where it goes from here:</div>
+    <div class="outlook-title">What’s next: from MVP (Phase 0) to production</div>
+    <div style="font-size:12px;color:#6b6a66;margin-bottom:12px;line-height:1.6;">The all-in-one assistant is <strong style="color:#1a1a18;">Phase 0, the MVP that shipped</strong>. It proved the concept and revealed what needs to change. Here’s where it goes from here:</div>
     <div class="timeline">
       <div class="tl-item">
         <div class="tl-dot d1"></div>
         <div class="tl-label tl-l1">Phase 1</div>
         <div class="tl-title">Helpers prove value</div>
-        <div class="tl-desc">One task. One helper. Measurable outcome. Field mapping, schema parsing, posting instructions — each solved in context.</div>
+        <div class="tl-desc">One task. One helper. Measurable outcome. Field mapping, schema parsing, posting instructions, each solved in context.</div>
       </div>
       <div class="tl-item">
         <div class="tl-dot d2"></div>
@@ -2744,7 +2744,7 @@ renderS1();
         <div class="tl-dot d3"></div>
         <div class="tl-label tl-l3">Phase 3</div>
         <div class="tl-title">Assistant becomes a routing layer</div>
-        <div class="tl-desc">The assistant understands intent and routes the user to the right screen and the right helper. It coordinates — it doesn’t execute.</div>
+        <div class="tl-desc">The assistant understands intent and routes the user to the right screen and the right helper. It coordinates, it doesn’t execute.</div>
       </div>
       <div class="tl-item">
         <div class="tl-dot d4"></div>
@@ -2768,13 +2768,13 @@ const sc=[
   {r:'u',t:'Acme Webhook'},
   {r:'ai',t:"Got it. What's the destination webhook URL?",ms:4100,ph:'Phase 1 of 8',bar:12,pre:'https://acme.io/leads'},
   {r:'u',t:'https://acme.io/leads'},
-  {r:'ai',t:'Loading your lead types...',ms:17900,slow:true,sl:'18s — LLM generating lead type selector card',ph:'Phase 2 of 8',bar:25,pre:'Mortgage leads'},
+  {r:'ai',t:'Loading your lead types...',ms:17900,slow:true,sl:'18s, LLM generating lead type selector card',ph:'Phase 2 of 8',bar:25,pre:'Mortgage leads'},
   {r:'u',t:'Mortgage leads'},
-  {r:'ai',t:'Delivery schedule — 24/7 or specific hours?',ms:5100,ph:'Phase 3 of 8',bar:37,pre:'24/7'},
+  {r:'ai',t:'Delivery schedule: 24/7 or specific hours?',ms:5100,ph:'Phase 3 of 8',bar:37,pre:'24/7'},
   {r:'u',t:'24/7'},
   {r:'ai',t:'Paste your JSON schema so I can map your fields.',ms:6800,ph:'Phase 3 of 8',bar:37,pre:'{ "first_name": "...", "loan_amount": 250000 }'},
   {r:'u',t:'{ "first_name": "...", "loan_amount": 250000 }'},
-  {r:'ai',t:'Generating field mapping preview...',ms:51800,slow:true,sl:'52s — LLM building mapping card (~4,000 output tokens)',ph:'Phase 3 of 8',bar:37,pre:'Confirmed'},
+  {r:'ai',t:'Generating field mapping preview...',ms:51800,slow:true,sl:'52s, LLM building mapping card (~4,000 output tokens)',ph:'Phase 3 of 8',bar:37,pre:'Confirmed'},
   {r:'u',t:'Confirmed'},
   {r:'ai',t:'Price per lead?',ms:4400,ph:'Phase 5 of 8',bar:62,pre:'$200'},
   {r:'u',t:'$200'},
@@ -2782,7 +2782,7 @@ const sc=[
   {r:'u',t:'Exclusive'},
   {r:'ai',t:'Which states should this account target?',ms:9400,ph:'Phase 5 of 8',bar:62,pre:'California, Texas'},
   {r:'u',t:'California, Texas'},
-  {r:'ai',t:'Building criteria suggestions...',ms:45400,slow:true,sl:'45s — LLM building criteria card (~2,500 output tokens)',ph:'Phase 5 of 8',bar:62,pre:'Skip'},
+  {r:'ai',t:'Building criteria suggestions...',ms:45400,slow:true,sl:'45s, LLM building criteria card (~2,500 output tokens)',ph:'Phase 5 of 8',bar:62,pre:'Skip'},
   {r:'u',t:'Skip'},
   {r:'ai',t:'Done. Acme Webhook is now active.',ms:2800,ph:'Phase 8 of 8',bar:100,last:true},
 ];
@@ -2855,7 +2855,7 @@ function renderS1(){
   const fc=document.createElement('div');fc.className='fcard';
   fc.innerHTML=`<div class="fct">Connection details</div>${fv('Name','Acme Webhook')}${fv('Endpoint URL','https://acme.io/leads',true)}${fv('Content type','JSON')}${fv('Lead type','Mortgage leads')}`;
   b.appendChild(fc);
-  setFooter('<button class="btn-pri" onclick="renderS2()">Next — field mapping →</button>');
+  setFooter('<button class="btn-pri" onclick="renderS2()">Next: field mapping →</button>');
 }
 
 function renderS2(){
@@ -2880,7 +2880,7 @@ function runHelper(){
   setFooter('<span style="font-size:11px;color:#9b9a96;">Running field mapping helper...</span>');
   setTimeout(()=>{
     hb.style.background='#E1F5EE';hb.style.borderColor='#5DCAA5';
-    hb.innerHTML='<div class="hbox-head"><div class="hdot"></div><div class="htitle">Field mapping helper — 4 of 4 matched</div><div class="htime">2.1s</div></div>';
+    hb.innerHTML='<div class="hbox-head"><div class="hdot"></div><div class="htitle">Field mapping helper: 4 of 4 matched</div><div class="htime">2.1s</div></div>';
     [['first_name','contact_first_name'],['loan_amount','requested_amount'],['state','target_state'],['email','contact_email']].forEach(([s,d])=>{
       const r=document.createElement('div');r.className='mrow';
       r.innerHTML=`<div class="mc">${s}</div><div class="ma">→</div><div class="mc">${d}</div><div class="chi">matched</div>`;
