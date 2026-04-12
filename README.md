@@ -56,6 +56,7 @@ The product side said: users rejected a separate AI path. The evidence suggests 
 
 Both point to the same direction: smaller, focused AI capabilities embedded inside the product, not a separate all-in-one assistant alongside it.
 
+Benchmark:
 This progression has precedent. GitHub Copilot started as an inline code completion helper in 2021 and only expanded into chat, multi-file editing, and autonomous agents as each previous step proved adoption. Notion AI followed a similar arc: writing assistant (2022), then AI capabilities distributed into specific product contexts like database autofill (2023), then autonomous agents built on top of those foundations with Notion 3.0 (2025). Whether each step was deliberately contingent on the previous one is my inference, not something either company has stated, but the pattern is consistent: start embedded, prove value, expand scope.
 
 ## The embedded helper pattern
