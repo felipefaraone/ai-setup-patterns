@@ -170,6 +170,1485 @@
       <div class="ctx-t">Task: set up a webhook integration for a new buyer</div>
       <div class="ctx-d">Connect their endpoint, map source fields to destination fields, set pricing and routing rules.</div>
     </div>
+    <button class="rbtn" onclick="resetAll()">âº Reset</button>
+  </div>
+
+
+  <div class="explain">
+    <div class="explain-cols">
+      <div class="explain-card explain-mono">
+        <div class="explain-head">
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#BA7517" stroke-width="1.5"/><path d="M10 5v6M7 8l3 3 3-3" stroke="#BA7517" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="15" r="1" fill="#BA7517"/></svg>
+          <div class="explain-title">Left: AI owns the entire flow</div>
+        </div>
+        <div class="explain-desc">Every step through the model. Eight phases, multiple round trips, each a chance to skip, stall, or hallucinate.</div>
+        <div class="explain-tags">
+          <span class="etag etag-warn">8 phases</span>
+          <span class="etag etag-warn">20 exchanges</span>
+          <span class="etag etag-warn">~8 min</span>
+        </div>
+      </div>
+      <div class="explain-card explain-helper">
+        <div class="explain-head">
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#1D9E75" stroke-width="1.5"/><path d="M6.5 10.5l2.5 2.5 5-5" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="explain-title">Right: Product owns the flow</div>
+        </div>
+        <div class="explain-desc">AI runs once for field mapping. Everything else is a normal product screen. Faster, testable, predictable.</div>
+        <div class="explain-tags">
+          <span class="etag etag-good">3 steps</span>
+          <span class="etag etag-good">1 AI call</span>
+          <span class="etag etag-good">~2 min</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="cols">
+    <div class="pane" id="pane-m">
+      <div class="phead">
+        <div><div class="ptitle">All-in-one assistant</div><div class="psub">What shipped, the MVP</div></div>
+        <div style="text-align:right"><span class="ibadge"><svg width="8" height="8" viewBox="0 0 8 8" fill="none"><polygon points="1,0 7,4 1,8" fill="#185FA5"/></svg>Interactive</span><div class="ptag" id="m-tag" style="margin-top:3px">Phase 1 of 8</div></div>
+      </div>
+      <div class="pbar"><div class="pbarfill amber" id="m-bar" style="width:12%"></div></div>
+      <div class="chat-scroll" id="m-chat"></div>
+      <div class="chat-foot">
+        <input class="cinput" id="m-inp" readonly placeholder="Waiting for AI..." />
+        <button class="sendbtn" id="m-btn" onclick="mSend()" disabled>Send</button>
+      </div>
+      <div class="resbar" id="m-res">
+        <span class="rlbl">Completed</span>
+        <span class="rpill rps">~8 min Â· 20 exchanges Â· AI did everything</span>
+      </div>
+    </div>
+
+    <div class="pane" id="pane-h">
+      <div class="phead">
+        <div><div class="ptitle">Embedded helpers</div><div class="psub">What comes next, the pivot</div></div>
+        <div style="text-align:right"><span class="ibadge"><svg width="8" height="8" viewBox="0 0 8 8" fill="none"><polygon points="1,0 7,4 1,8" fill="#185FA5"/></svg>Interactive</span><div class="ptag" id="h-tag" style="margin-top:3px">Step 1 of 3</div></div>
+      </div>
+      <div class="pbar"><div class="pbarfill teal" id="h-bar" style="width:33%"></div></div>
+      <div class="prod-layout">
+        <div class="prod-scroll" id="h-body"></div>
+        <div class="prod-footer" id="h-footer"></div>
+      </div>
+      <div class="resbar" id="h-res">
+        <span class="rlbl">Completed</span>
+        <span class="rpill rpf">~2 min Â· 3 steps Â· AI ran once for 2.1s</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="compare" id="compare-panel">
+    <div class="compare-title">What the numbers actually mean</div>
+    <table class="ctable">
+      <thead>
+        <tr><th></th><th>All-in-one assistant</th><th>Embedded helpers</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Total time</td><td class="bad">~8 min</td><td class="good">~2 min</td></tr>
+        <tr><td>User interactions</td><td class="bad">20 exchanges</td><td class="good">3 steps</td></tr>
+        <tr><td>Where AI ran</td><td class="bad">Every single step</td><td class="good">Once, for 2.1s</td></tr>
+        <tr><td>Who controls sequencing</td><td class="bad">The prompt</td><td class="good">The product</td></tr>
+        <tr><td>Who controls validation</td><td class="bad">The prompt</td><td class="good">The product</td></tr>
+        <tr><td>What breaks if model updates</td><td class="bad">The entire flow</td><td class="good">One helper, one task</td></tr>
+        <tr><td>Can you write a unit test?</td><td class="bad">No</td><td class="good">Yes, input â output</td></tr>
+        <tr><td>Failure surface</td><td class="bad">Any of 8 phases, any step</td><td class="good">One task, one place</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="outlook">
+    <div class="outlook-title">Whatâs next: from MVP (Phase 0) to production</div>
+    <div style="font-size:12px;color:#6b6a66;margin-bottom:12px;line-height:1.6;">The all-in-one assistant is <strong style="color:#1a1a18;">Phase 0, the MVP that shipped</strong>. It proved the concept and revealed what needs to change. Hereâs where it goes from here:</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot d1"></div>
+        <div class="tl-label tl-l1">Phase 1</div>
+        <div class="tl-title">Helpers prove value</div>
+        <div class="tl-desc">One task. One helper. Measurable outcome. Field mapping, schema parsing, posting instructions, each solved in context.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot d2"></div>
+        <div class="tl-label tl-l2">Phase 2</div>
+        <div class="tl-title">Helpers become a reusable AI layer</div>
+        <div class="tl-desc">The same field mapping helper gets called from any integration screen. The investment compounds instead of being rebuilt per use case.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot d3"></div>
+        <div class="tl-label tl-l3">Phase 3</div>
+        <div class="tl-title">Assistant becomes a routing layer</div>
+        <div class="tl-desc">The assistant understands intent and routes the user to the right screen and the right helper. It coordinates, it doesnât execute.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot d4"></div>
+        <div class="tl-label tl-l4">Phase 4</div>
+        <div class="tl-title">System becomes proactive</div>
+        <div class="tl-desc">With helpers running and generating data, the product surfaces insights without being asked. The AI shifts from reactive to ambient.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Built by <a href="https://felipefaraone.com">Felipe Faraone</a></span>
+    <a href="https://github.com/felipefaraone/ai-setup-patterns">View on GitHub â</a>
+  </div>
+
+</div>
+
+<script>
+const sc=[
+  {r:'ai',t:"Hi! I'll guide you through the full setup. What's the name of this integration?",ms:3200,ph:'Phase 1 of 8',bar:12,pre:'Acme Webhook'},
+  {r:'u',t:'Acme Webhook'},
+  {r:'ai',t:"Got it. What's the destination webhook URL?",ms:4100,ph:'Phase 1 of 8',bar:12,pre:'https://acme.io/leads'},
+  {r:'u',t:'https://acme.io/leads'},
+  {r:'ai',t:'Loading your lead types...',ms:17900,slow:true,sl:'18s, LLM generating lead type selector card',ph:'Phase 2 of 8',bar:25,pre:'Mortgage leads'},
+  {r:'u',t:'Mortgage leads'},
+  {r:'ai',t:'Delivery schedule: 24/7 or specific hours?',ms:5100,ph:'Phase 3 of 8',bar:37,pre:'24/7'},
+  {r:'u',t:'24/7'},
+  {r:'ai',t:'Paste your JSON schema so I can map your fields.',ms:6800,ph:'Phase 3 of 8',bar:37,pre:'{ "first_name": "...", "loan_amount": 250000 }'},
+  {r:'u',t:'{ "first_name": "...", "loan_amount": 250000 }'},
+  {r:'ai',t:'Generating field mapping preview...',ms:51800,slow:true,sl:'52s, LLM building mapping card (~4,000 output tokens)',ph:'Phase 3 of 8',bar:37,pre:'Confirmed'},
+  {r:'u',t:'Confirmed'},
+  {r:'ai',t:'Price per lead?',ms:4400,ph:'Phase 5 of 8',bar:62,pre:'$200'},
+  {r:'u',t:'$200'},
+  {r:'ai',t:'Exclusive or shared routing?',ms:3800,ph:'Phase 5 of 8',bar:62,pre:'Exclusive'},
+  {r:'u',t:'Exclusive'},
+  {r:'ai',t:'Which states should this account target?',ms:9400,ph:'Phase 5 of 8',bar:62,pre:'California, Texas'},
+  {r:'u',t:'California, Texas'},
+  {r:'ai',t:'Building criteria suggestions...',ms:45400,slow:true,sl:'45s, LLM building criteria card (~2,500 output tokens)',ph:'Phase 5 of 8',bar:62,pre:'Skip'},
+  {r:'u',t:'Skip'},
+  {r:'ai',t:'Done. Acme Webhook is now active.',ms:2800,ph:'Phase 8 of 8',bar:100,last:true},
+];
+
+let mIdx=0,mBusy=false,mTimer=null;
+
+function addBub(role,text,ms,slow,sl){
+  const c=document.getElementById('m-chat');
+  const b=document.createElement('div');b.className='bub '+role;b.textContent=text;
+  if(ms&&role==='ai'){
+    const t=document.createElement('div');t.className='bt'+(slow?' warn':'');
+    t.textContent=(ms/1000).toFixed(1)+'s response time';b.appendChild(t);
+    if(slow){const s=document.createElement('div');s.className='stag';s.textContent=sl;b.appendChild(s);}
+  }
+  c.appendChild(b);c.scrollTop=c.scrollHeight;
+}
+
+function setInput(val){
+  const i=document.getElementById('m-inp'),b=document.getElementById('m-btn');
+  if(val){i.value=val;i.style.color='#1a1a18';b.disabled=false;}
+  else{i.value='Waiting for AI...';i.style.color='#9b9a96';b.disabled=true;}
+}
+
+function mSend(){
+  if(mBusy||mIdx>=sc.length)return;
+  const s=sc[mIdx];if(s.r!=='u')return;
+  document.getElementById('m-btn').disabled=true;
+  addBub('u',s.t);mIdx++;
+  if(mIdx>=sc.length)return;
+  mBusy=true;setInput(null);
+  const c=document.getElementById('m-chat');
+  const ty=document.createElement('div');ty.className='typing-ind';ty.id='tyi';
+  ty.innerHTML='<div class="d"></div><div class="d"></div><div class="d"></div>';
+  c.appendChild(ty);c.scrollTop=c.scrollHeight;
+  const nx=sc[mIdx];
+  mTimer=setTimeout(()=>{
+    if(document.getElementById('tyi'))c.removeChild(ty);
+    addBub('ai',nx.t,nx.ms,nx.slow,nx.sl);
+    if(nx.ph)document.getElementById('m-tag').textContent=nx.ph;
+    if(nx.bar)document.getElementById('m-bar').style.width=nx.bar+'%';
+    mIdx++;mBusy=false;
+    if(nx.last)monoEnd();else setInput(sc[mIdx]?.t||'');
+  },Math.min((nx.ms||2000)/16,3000));
+}
+
+function monoEnd(){
+  setInput(null);
+  document.getElementById('m-res').classList.add('show');
+  checkBoth();
+}
+
+let hDone=false;
+function checkBoth(){
+  if(hDone&&document.getElementById('m-res').classList.contains('show')){
+    document.getElementById('pane-h').classList.add('winner');
+    document.getElementById('compare-panel').classList.add('show');
+  }
+}
+
+function fv(l,v,m){return`<div class="frow"><span class="flabel">${l}</span><span class="fval${m?' mono':''}">${v}</span></div>`;}
+function setFooter(h){document.getElementById('h-footer').innerHTML=h;}
+
+function renderS1(){
+  document.getElementById('h-tag').textContent='Step 1 of 3';
+  document.getElementById('h-bar').style.width='33%';
+  const b=document.getElementById('h-body');b.innerHTML='';
+  const s=document.createElement('div');s.className='steps';
+  s.innerHTML='<div class="sp act">1 Endpoint</div><div class="sp">2 Field mapping</div><div class="sp">3 Routing rules</div>';
+  b.appendChild(s);
+  const fc=document.createElement('div');fc.className='fcard';
+  fc.innerHTML=`<div class="fct">Connection details</div>${fv('Name','Acme Webhook')}${fv('Endpoint URL','https://acme.io/leads',true)}${fv('Content type','JSON')}${fv('Lead type','Mortgage leads')}`;
+  b.appendChild(fc);
+  setFooter('<button class="btn-pri" onclick="renderS2()">Next: field mapping â</button>');
+}
+
+function renderS2(){
+  document.getElementById('h-tag').textContent='Step 2 of 3';
+  document.getElementById('h-bar').style.width='66%';
+  const b=document.getElementById('h-body');b.innerHTML='';
+  const s=document.createElement('div');s.className='steps';
+  s.innerHTML='<div class="sp done">1 Endpoint</div><div class="sp act">2 Field mapping</div><div class="sp">3 Routing rules</div>';
+  b.appendChild(s);
+  const fc=document.createElement('div');fc.className='fcard';
+  fc.innerHTML=`<div class="fct">Posting instructions</div>${fv('JSON schema','{ "first_name": "John", "loan_amount": 250000, "state": "CA", "email": "j@j.com" }',true)}`;
+  b.appendChild(fc);
+  const hb=document.createElement('div');hb.id='hbox';hb.style.display='none';b.appendChild(hb);
+  setFooter('<button class="btn-ghost" onclick="renderS1()">â Back</button><button class="btn-pri" onclick="runHelper()">Analyze with AI helper â</button>');
+}
+
+function runHelper(){
+  const hb=document.getElementById('hbox');if(!hb)return;
+  hb.style.display='block';hb.className='hbox';
+  hb.style.background='#FAEEDA';hb.style.borderColor='#EF9F27';
+  hb.innerHTML='<div class="hbox-head"><div class="hdot" style="background:#EF9F27"></div><div class="htitle" style="color:#854F0B">Analyzing posting instructions...</div></div>';
+  setFooter('<span style="font-size:11px;color:#9b9a96;">Running field mapping helper...</span>');
+  setTimeout(()=>{
+    hb.style.background='#E1F5EE';hb.style.borderColor='#5DCAA5';
+    hb.innerHTML='<div class="hbox-head"><div class="hdot"></div><div class="htitle">Field mapping helper: 4 of 4 matched</div><div class="htime">2.1s</div></div>';
+    [['first_name','contact_first_name'],['loan_amount','requested_amount'],['state','target_state'],['email','contact_email']].forEach(([s,d])=>{
+      const r=document.createElement('div');r.className='mrow';
+      r.innerHTML=`<div class="mc">${s}</div><div class="ma">â</div><div class="mc">${d}</div><div class="chi">matched</div>`;
+      hb.appendChild(r);
+    });
+    const n=document.createElement('div');n.className='hnote';n.textContent='Review and adjust if needed. Accepted mappings apply on save.';
+    hb.appendChild(n);
+    document.getElementById('h-body').scrollTop=9999;
+    setFooter('<button class="btn-ghost" onclick="renderS2()">Edit</button><button class="btn-pri" onclick="renderS3()">Accept and continue â</button>');
+  },1600);
+}
+
+function renderS3(){
+  document.getElementById('h-tag').textContent='Step 3 of 3';
+  document.getElementById('h-bar').style.width='90%';
+  const b=document.getElementById('h-body');b.innerHTML='';
+  const s=document.createElement('div');s.className='steps';
+  s.innerHTML='<div class="sp done">1 Endpoint</div><div class="sp done">2 Field mapping</div><div class="sp act">3 Routing rules</div>';
+  b.appendChild(s);
+  const hd=document.createElement('div');hd.className='hbox';
+  hd.innerHTML='<div class="hbox-head"><div class="hdot"></div><div class="htitle">4 field mappings accepted</div></div>';
+  b.appendChild(hd);
+  const fc=document.createElement('div');fc.className='fcard';
+  fc.innerHTML=`<div class="fct">Routing rules</div>${fv('Price per lead','$200')}${fv('Exclusivity','Exclusive')}${fv('Target states','California, Texas')}`;
+  b.appendChild(fc);
+  setFooter('<button class="btn-ghost" onclick="renderS2()">â Back</button><button class="btn-outline">Save draft</button><button class="btn-pri" onclick="helperDone()">Activate â</button>');
+}
+
+function helperDone(){
+  hDone=true;
+  document.getElementById('h-tag').textContent='Active';
+  document.getElementById('h-bar').style.width='100%';
+  const b=document.getElementById('h-body');b.innerHTML='';
+  const s=document.createElement('div');s.className='steps';
+  s.innerHTML='<div class="sp done">1 Endpoint</div><div class="sp done">2 Field mapping</div><div class="sp done">3 Routing rules</div>';
+  b.appendChild(s);
+  const fc=document.createElement('div');fc.className='fcard';
+  fc.style.cssText='padding:1.5rem 1rem;text-align:center;';
+  fc.innerHTML=`<div style="font-size:14px;font-weight:500;margin-bottom:4px;">Acme Webhook active</div>
+  <div style="font-size:12px;color:#6b6a66;margin-bottom:12px;">4 fields mapped Â· CA, TX Â· $200 Â· Exclusive</div>
+  <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">
+    <span style="font-size:11px;padding:3px 10px;border-radius:99px;background:#E1F5EE;color:#0F6E56;">~2 min total</span>
+    <span style="font-size:11px;padding:3px 10px;border-radius:99px;background:#E1F5EE;color:#0F6E56;">3 product steps</span>
+    <span style="font-size:11px;padding:3px 10px;border-radius:99px;background:#E1F5EE;color:#0F6E56;">AI ran once Â· 2.1s</span>
+  </div>`;
+  b.appendChild(fc);
+  setFooter('');
+  document.getElementById('h-res').classList.add('show');
+  checkBoth();
+}
+
+function resetAll(){
+  clearTimeout(mTimer);
+  mIdx=0;mBusy=false;hDone=false;
+  document.getElementById('m-chat').innerHTML='';
+  document.getElementById('m-tag').textContent='Phase 1 of 8';
+  document.getElementById('m-bar').style.width='12%';
+  document.getElementById('m-res').classList.remove('show');
+  document.getElementById('h-res').classList.remove('show');
+  document.getElementById('pane-h').classList.remove('winner');
+  document.getElementById('compare-panel').classList.remove('show');
+  setInput(null);
+  const s0=sc[0];addBub('ai',s0.t,s0.ms);
+  document.getElementById('m-tag').textContent=s0.ph;
+  mIdx=1;setInput(sc[1].t);
+  renderS1();
+}
+
+const s0=sc[0];addBub('ai',s0.t,s0.ms);
+document.getElementById('m-tag').textContent=s0.ph;
+mIdx=1;setInput(sc[1].t);
+renderS1();
+</script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ai-setup-patterns: live demo</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --color-bg: #ffffff;
+    --color-bg-secondary: #f5f4f0;
+    --color-text-primary: #1a1a18;
+    --color-text-secondary: #6b6a66;
+    --color-text-tertiary: #9b9a96;
+    --color-border: rgba(0,0,0,0.1);
+    --color-border-secondary: rgba(0,0,0,0.18);
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-mono: "SF Mono", "Fira Code", monospace;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+  }
+  body { font-family: var(--font-sans); font-size: 14px; line-height: 1.6; color: var(--color-text-primary); background: var(--color-bg); padding: 2rem 1rem; }
+  .page { max-width: 960px; margin: 0 auto; }
+
+  .intro { margin-bottom: 16px; }
+  .intro-title { font-size: 16px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 4px; }
+  .intro-sub { font-size: 13px; color: var(--color-text-secondary); }
+  .intro-sub a { color: var(--color-text-secondary); text-decoration: none; border-bottom: 1px solid var(--color-border); }
+  .divider { height: 1px; background: var(--color-border); margin: 14px 0; }
+
+  .ctx { background: var(--color-bg-secondary); border: 0.5px solid var(--color-border); border-radius: var(--radius-md); padding: 10px 16px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .ctx-t { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+  .ctx-d { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+  .rbtn { font-size: 12px; padding: 5px 12px; border: 0.5px solid var(--color-border-secondary); border-radius: 6px; background: var(--color-bg); color: var(--color-text-secondary); cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+  .rbtn:hover { background: var(--color-bg-secondary); }
+
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .pane { border-radius: var(--radius-lg); border: 0.5px solid var(--color-border); background: var(--color-bg-secondary); display: flex; flex-direction: column; height: 480px; box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03); transition: box-shadow 0.2s; }
+  .pane:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.07), 0 8px 24px rgba(0,0,0,0.05); }
+  .pane.winner { border: 1.5px solid #1D9E75; }
+  .phead { padding: 10px 14px; border-bottom: 0.5px solid var(--color-border); background: var(--color-bg); display: flex; justify-content: space-between; align-items: flex-start; border-radius: var(--radius-lg) var(--radius-lg) 0 0; flex-shrink: 0; }
+  #pane-m .phead { border-top: 2px solid #EF9F27; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+  #pane-h .phead { border-top: 2px solid #1D9E75; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+  .ibadge { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; padding: 2px 7px; border-radius: 4px; background: #E6F1FB; color: #185FA5; display: inline-flex; align-items: center; gap: 3px; margin-top: 2px; }
+  .ibadge svg { flex-shrink: 0; }
+  .ptitle { font-size: 13px; font-weight: 500; }
+  .psub { font-size: 11px; color: var(--color-text-tertiary); margin-top: 1px; }
+  .ptag { font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px; }
+  .pbar { height: 2px; background: var(--color-border); flex-shrink: 0; }
+  .pbarfill { height: 100%; transition: width 0.5s; }
+  .amber { background: #EF9F27; } .teal { background: #1D9E75; }
+
+  .chat-scroll { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 7px; overflow-y: auto; min-height: 0; }
+  .bub { font-size: 12px; line-height: 1.5; padding: 8px 11px; border-radius: 9px; max-width: 86%; }
+  .bub.ai { background: var(--color-bg); border: 0.5px solid var(--color-border); color: var(--color-text-primary); align-self: flex-start; }
+  .bub.usr { background: #185FA5; color: #E6F1FB; align-self: flex-end; }
+  .bt { font-size: 10px; margin-top: 3px; color: var(--color-text-tertiary); }
+  .bt.warn { color: #BA7517; }
+  .stag { font-size: 10px; display: inline-block; margin-top: 3px; padding: 2px 7px; border-radius: 4px; background: #FAEEDA; color: #854F0B; }
+  .typing-ind { display: flex; gap: 3px; padding: 8px 11px; background: var(--color-bg); border: 0.5px solid var(--color-border); border-radius: 9px; align-self: flex-start; }
+  .d { width: 5px; height: 5px; border-radius: 50%; background: var(--color-text-tertiary); animation: bl 1.2s infinite; }
+  .d:nth-child(2) { animation-delay: .2s; } .d:nth-child(3) { animation-delay: .4s; }
+  @keyframes bl { 0%,80%,100% { opacity: .2; } 40% { opacity: 1; } }
+
+  .chat-foot { padding: 8px 12px; border-top: 0.5px solid var(--color-border); background: var(--color-bg); display: flex; gap: 6px; flex-shrink: 0; border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+  .cinput { flex: 1; font-size: 12px; font-family: var(--font-sans); padding: 6px 10px; border: 0.5px solid var(--color-border-secondary); border-radius: 6px; background: var(--color-bg-secondary); color: var(--color-text-primary); }
+  .sendbtn { font-size: 12px; font-weight: 500; font-family: var(--font-sans); padding: 6px 16px; border: none; border-radius: 6px; background: #185FA5; color: #E6F1FB; cursor: pointer; white-space: nowrap; }
+  .sendbtn:disabled { background: var(--color-bg-secondary); color: var(--color-text-tertiary); border: 0.5px solid var(--color-border); cursor: default; }
+
+  .resbar { padding: 8px 14px; border-top: 0.5px solid var(--color-border); display: none; justify-content: space-between; align-items: center; background: var(--color-bg); flex-shrink: 0; }
+  .resbar.show { display: flex; }
+  .rpill { font-size: 10px; font-weight: 500; padding: 2px 9px; border-radius: 99px; }
+  .rps { background: #FAEEDA; color: #854F0B; } .rpf { background: #E1F5EE; color: #0F6E56; }
+  .rlbl { font-size: 11px; color: var(--color-text-tertiary); }
+
+  .prod-layout { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .prod-scroll { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; min-height: 0; }
+  .prod-footer { padding: 8px 12px; border-top: 0.5px solid var(--color-border); background: var(--color-bg); display: flex; align-items: center; gap: 6px; flex-shrink: 0; border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+  .btn-ghost { font-size: 11px; font-family: var(--font-sans); padding: 5px 8px; border: none; background: none; color: var(--color-text-secondary); cursor: pointer; border-radius: 6px; white-space: nowrap; }
+  .btn-ghost:hover { background: var(--color-bg-secondary); }
+  .btn-outline { font-size: 11px; font-family: var(--font-sans); padding: 5px 10px; border: 0.5px solid var(--color-border-secondary); background: var(--color-bg); color: var(--color-text-primary); cursor: pointer; border-radius: 6px; white-space: nowrap; }
+  .btn-pri { font-size: 11px; font-weight: 500; font-family: var(--font-sans); padding: 5px 14px; border: none; border-radius: 6px; background: #185FA5; color: #E6F1FB; cursor: pointer; margin-left: auto; white-space: nowrap; }
+  .btn-pri:hover { background: #0C447C; }
+
+  .steps { display: flex; flex-shrink: 0; }
+  .sp { flex: 1; font-size: 11px; text-align: center; padding: 5px 4px; border: 0.5px solid var(--color-border); background: var(--color-bg); color: var(--color-text-tertiary); font-family: var(--font-sans); }
+  .sp:first-child { border-radius: 6px 0 0 6px; } .sp:last-child { border-radius: 0 6px 6px 0; }
+  .sp.act { color: var(--color-text-primary); font-weight: 500; background: var(--color-bg-secondary); }
+  .sp.done { background: #E1F5EE; color: #0F6E56; border-color: #5DCAA5; }
+
+  .fcard { background: var(--color-bg); border: 0.5px solid var(--color-border); border-radius: var(--radius-md); padding: 10px 12px; }
+  .fct { font-size: 10px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; }
+  .frow { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+  .frow:last-child { margin-bottom: 0; }
+  .flabel { font-size: 11px; color: var(--color-text-secondary); width: 88px; flex-shrink: 0; padding-top: 1px; }
+  .fval { flex: 1; font-size: 12px; color: var(--color-text-primary); padding: 5px 8px; background: var(--color-bg-secondary); border: 0.5px solid var(--color-border); border-radius: 6px; }
+  .fval.mono { font-family: var(--font-mono); font-size: 11px; max-height: 54px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; line-height: 1.5; }
+
+  .hbox { border: 0.5px solid #5DCAA5; border-radius: var(--radius-md); background: #E1F5EE; padding: 10px 12px; }
+  .hbox-head { display: flex; align-items: center; gap: 6px; margin-bottom: 7px; }
+  .hdot { width: 6px; height: 6px; border-radius: 50%; background: #1D9E75; flex-shrink: 0; }
+  .htitle { font-size: 11px; font-weight: 500; color: #0F6E56; flex: 1; }
+  .htime { font-size: 10px; color: #0F6E56; }
+  .mrow { display: grid; grid-template-columns: 1fr 14px 1fr 52px; gap: 4px; align-items: center; margin-bottom: 4px; }
+  .mc { font-size: 11px; padding: 3px 7px; background: var(--color-bg); border-radius: 4px; color: var(--color-text-primary); font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ma { font-size: 10px; color: #1D9E75; text-align: center; }
+  .chi { font-size: 10px; padding: 2px 6px; border-radius: 99px; background: rgba(29,158,117,.15); color: #0F6E56; text-align: center; }
+  .hnote { font-size: 11px; color: #085041; margin-top: 7px; padding-top: 7px; border-top: 0.5px solid #9FE1CB; }
+
+  .compare { display: none; margin-top: 20px; background: var(--color-bg-secondary); border: 0.5px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .compare.show { display: block; }
+  .compare-title { font-size: 13px; font-weight: 500; padding: 12px 16px; border-bottom: 0.5px solid var(--color-border); background: var(--color-bg); }
+  .ctable { width: 100%; border-collapse: collapse; }
+  .ctable th { font-size: 10px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .04em; padding: 9px 16px; text-align: left; border-bottom: 0.5px solid var(--color-border); background: var(--color-bg); }
+  .ctable th:not(:first-child) { text-align: center; }
+  .ctable td { font-size: 12px; padding: 10px 16px; border-bottom: 0.5px solid var(--color-border); }
+  .ctable tr:last-child td { border-bottom: none; }
+  .ctable td:not(:first-child) { text-align: center; }
+  .ctable td:first-child { color: var(--color-text-secondary); font-size: 11px; width: 36%; }
+  .ctable tr:hover td { background: var(--color-bg-secondary); }
+  .bad { color: #993C1D; font-weight: 500; } .good { color: #0F6E56; font-weight: 500; }
+
+  .outlook { margin-top: 24px; padding-top: 20px; border-top: 0.5px solid var(--color-border); }
+  .outlook-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 12px; }
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content: ""; position: absolute; left: 9px; top: 8px; bottom: 8px; width: 1.5px; background: linear-gradient(to bottom, #185FA5, #1D9E75, #534AB7, #854F0B); border-radius: 1px; }
+  .tl-item { position: relative; padding-bottom: 16px; }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-dot { position: absolute; left: -23px; top: 3px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid; background: var(--color-bg); }
+  .tl-dot.d1 { border-color: #185FA5; } .tl-dot.d2 { border-color: #1D9E75; } .tl-dot.d3 { border-color: #534AB7; } .tl-dot.d4 { border-color: #854F0B; }
+  .tl-label { font-size: 10px; font-weight: 500; margin-bottom: 2px; }
+  .tl-l1 { color: #185FA5; } .tl-l2 { color: #0F6E56; } .tl-l3 { color: #534AB7; } .tl-l4 { color: #854F0B; }
+  .tl-title { font-size: 12px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 2px; }
+  .tl-desc { font-size: 11px; color: var(--color-text-secondary); line-height: 1.5; }
+
+  .page-footer { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 0.5px solid var(--color-border); font-size: 12px; color: var(--color-text-tertiary); display: flex; justify-content: space-between; align-items: center; }
+  .page-footer a { color: var(--color-text-secondary); text-decoration: none; border-bottom: 1px solid var(--color-border); }
+
+  .explain { margin-bottom: 10px; }
+  .explain-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch; }
+  .explain-card { background: transparent; border-radius: var(--radius-md); padding: 6px 10px; display: flex; flex-direction: column; border-top: none; border-left: 2px solid transparent; }
+  .explain-mono { border-left-color: #EF9F27; }
+  .explain-helper { border-left-color: #1D9E75; }
+  .explain-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .explain-title { font-size: 11px; font-weight: 600; color: var(--color-text-primary); }
+  .explain-desc { font-size: 11px; color: var(--color-text-tertiary); line-height: 1.5; flex: 1; }
+  .explain-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
+  .etag { font-size: 10px; font-weight: 500; padding: 1px 7px; border-radius: 99px; }
+  .etag-warn { background: #FAEEDA; color: #854F0B; }
+  .etag-good { background: #E1F5EE; color: #0F6E56; }
+
+  @media (max-width: 640px) {
+    .cols { grid-template-columns: 1fr; }
+    .explain-cols { grid-template-columns: 1fr; }
+    .pane { height: 420px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="intro">
+    <div class="intro-title">ai-setup-patterns: live demo</div>
+    <div class="intro-sub">Companion to the <a href="https://github.com/felipefaraone/ai-setup-patterns">GitHub repository</a>. Same setup task, two architectures. Interact with both sides and see the difference in complexity, speed, and where responsibility lives.</div>
+  </div>
+  <div class="divider"></div>
+
+  <div class="ctx">
+    <div>
+      <div class="ctx-t">Task: set up a webhook integration for a new buyer</div>
+      <div class="ctx-d">Connect their endpoint, map source fields to destination fields, set pricing and routing rules.</div>
+    </div>
+    <button class="rbtn" onclick="resetAll()">âº Reset</button>
+  </div>
+
+
+  <div class="explain">
+    <div class="explain-cols">
+      <div class="explain-card explain-mono">
+        <div class="explain-head">
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#BA7517" stroke-width="1.5"/><path d="M10 5v6M7 8l3 3 3-3" stroke="#BA7517" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="15" r="1" fill="#BA7517"/></svg>
+          <div class="explain-title">Left: AI owns the entire flow</div>
+        </div>
+        <div class="explain-desc">Every step through the model. Eight phases, multiple round trips, each a chance to skip, stall, or hallucinate.</div>
+        <div class="explain-tags">
+          <span class="etag etag-warn">8 phases</span>
+          <span class="etag etag-warn">20 exchanges</span>
+          <span class="etag etag-warn">~8 min</span>
+        </div>
+      </div>
+      <div class="explain-card explain-helper">
+        <div class="explain-head">
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#1D9E75" stroke-width="1.5"/><path d="M6.5 10.5l2.5 2.5 5-5" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="explain-title">Right: Product owns the flow</div>
+        </div>
+        <div class="explain-desc">AI runs once for field mapping. Everything else is a normal product screen. Faster, testable, predictable.</div>
+        <div class="explain-tags">
+          <span class="etag etag-good">3 steps</span>
+          <span class="etag etag-good">1 AI call</span>
+          <span class="etag etag-good">~2 min</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="cols">
+    <div class="pane" id="pane-m">
+      <div class="phead">
+        <div><div class="ptitle">All-in-one assistant</div><div class="psub">What shipped, the MVP</div></div>
+        <div style="text-align:right"><span class="ibadge"><svg width="8" height="8" viewBox="0 0 8 8" fill="none"><polygon points="1,0 7,4 1,8" fill="#185FA5"/></svg>Interactive</span><div class="ptag" id="m-tag" style="margin-top:3px">Phase 1 of 8</div></div>
+      </div>
+      <div class="pbar"><div class="pbarfill amber" id="m-bar" style="width:12%"></div></div>
+      <div class="chat-scroll" id="m-chat"></div>
+      <div class="chat-foot">
+        <input class="cinput" id="m-inp" readonly placeholder="Waiting for AI..." />
+        <button class="sendbtn" id="m-btn" onclick="mSend()" disabled>Send</button>
+      </div>
+      <div class="resbar" id="m-res">
+        <span class="rlbl">Completed</span>
+        <span class="rpill rps">~8 min Â· 20 exchanges Â· AI did everything</span>
+      </div>
+    </div>
+
+    <div class="pane" id="pane-h">
+      <div class="phead">
+        <div><div class="ptitle">Embedded helpers</div><div class="psub">What comes next, the pivot</div></div>
+        <div style="text-align:right"><span class="ibadge"><svg width="8" height="8" viewBox="0 0 8 8" fill="none"><polygon points="1,0 7,4 1,8" fill="#185FA5"/></svg>Interactive</span><div class="ptag" id="h-tag" style="margin-top:3px">Step 1 of 3</div></div>
+      </div>
+      <div class="pbar"><div class="pbarfill teal" id="h-bar" style="width:33%"></div></div>
+      <div class="prod-layout">
+        <div class="prod-scroll" id="h-body"></div>
+        <div class="prod-footer" id="h-footer"></div>
+      </div>
+      <div class="resbar" id="h-res">
+        <span class="rlbl">Completed</span>
+        <span class="rpill rpf">~2 min Â· 3 steps Â· AI ran once for 2.1s</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="compare" id="compare-panel">
+    <div class="compare-title">What the numbers actually mean</div>
+    <table class="ctable">
+      <thead>
+        <tr><th></th><th>All-in-one assistant</th><th>Embedded helpers</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Total time</td><td class="bad">~8 min</td><td class="good">~2 min</td></tr>
+        <tr><td>User interactions</td><td class="bad">20 exchanges</td><td class="good">3 steps</td></tr>
+        <tr><td>Where AI ran</td><td class="bad">Every single step</td><td class="good">Once, for 2.1s</td></tr>
+        <tr><td>Who controls sequencing</td><td class="bad">The prompt</td><td class="good">The product</td></tr>
+        <tr><td>Who controls validation</td><td class="bad">The prompt</td><td class="good">The product</td></tr>
+        <tr><td>What breaks if model updates</td><td class="bad">The entire flow</td><td class="good">One helper, one task</td></tr>
+        <tr><td>Can you write a unit test?</td><td class="bad">No</td><td class="good">Yes, input â output</td></tr>
+        <tr><td>Failure surface</td><td class="bad">Any of 8 phases, any step</td><td class="good">One task, one place</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="outlook">
+    <div class="outlook-title">Whatâs next: from MVP (Phase 0) to production</div>
+    <div style="font-size:12px;color:#6b6a66;margin-bottom:12px;line-height:1.6;">The all-in-one assistant is <strong style="color:#1a1a18;">Phase 0, the MVP that shipped</strong>. It proved the concept and revealed what needs to change. Hereâs where it goes from here:</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot d1"></div>
+        <div class="tl-label tl-l1">Phase 1</div>
+        <div class="tl-title">Helpers prove value</div>
+        <div class="tl-desc">One task. One helper. Measurable outcome. Field mapping, schema parsing, posting instructions, each solved in context.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot d2"></div>
+        <div class="tl-label tl-l2">Phase 2</div>
+        <div class="tl-title">Helpers become a reusable AI layer</div>
+        <div class="tl-desc">The same field mapping helper gets called from any integration screen. The investment compounds instead of being rebuilt per use case.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot d3"></div>
+        <div class="tl-label tl-l3">Phase 3</div>
+        <div class="tl-title">Assistant becomes a routing layer</div>
+        <div class="tl-desc">The assistant understands intent and routes the user to the right screen and the right helper. It coordinates, it doesnât execute.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot d4"></div>
+        <div class="tl-label tl-l4">Phase 4</div>
+        <div class="tl-title">System becomes proactive</div>
+        <div class="tl-desc">With helpers running and generating data, the product surfaces insights without being asked. The AI shifts from reactive to ambient.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Built by <a href="https://felipefaraone.com">Felipe Faraone</a></span>
+    <a href="https://github.com/felipefaraone/ai-setup-patterns">View on GitHub â</a>
+  </div>
+
+</div>
+
+<script>
+const sc=[
+  {r:'ai',t:"Hi! I'll guide you through the full setup. What's the name of this integration?",ms:3200,ph:'Phase 1 of 8',bar:12,pre:'Acme Webhook'},
+  {r:'u',t:'Acme Webhook'},
+  {r:'ai',t:"Got it. What's the destination webhook URL?",ms:4100,ph:'Phase 1 of 8',bar:12,pre:'https://acme.io/leads'},
+  {r:'u',t:'https://acme.io/leads'},
+  {r:'ai',t:'Loading your lead types...',ms:17900,slow:true,sl:'18s, LLM generating lead type selector card',ph:'Phase 2 of 8',bar:25,pre:'Mortgage leads'},
+  {r:'u',t:'Mortgage leads'},
+  {r:'ai',t:'Delivery schedule: 24/7 or specific hours?',ms:5100,ph:'Phase 3 of 8',bar:37,pre:'24/7'},
+  {r:'u',t:'24/7'},
+  {r:'ai',t:'Paste your JSON schema so I can map your fields.',ms:6800,ph:'Phase 3 of 8',bar:37,pre:'{ "first_name": "...", "loan_amount": 250000 }'},
+  {r:'u',t:'{ "first_name": "...", "loan_amount": 250000 }'},
+  {r:'ai',t:'Generating field mapping preview...',ms:51800,slow:true,sl:'52s, LLM building mapping card (~4,000 output tokens)',ph:'Phase 3 of 8',bar:37,pre:'Confirmed'},
+  {r:'u',t:'Confirmed'},
+  {r:'ai',t:'Price per lead?',ms:4400,ph:'Phase 5 of 8',bar:62,pre:'$200'},
+  {r:'u',t:'$200'},
+  {r:'ai',t:'Exclusive or shared routing?',ms:3800,ph:'Phase 5 of 8',bar:62,pre:'Exclusive'},
+  {r:'u',t:'Exclusive'},
+  {r:'ai',t:'Which states should this account target?',ms:9400,ph:'Phase 5 of 8',bar:62,pre:'California, Texas'},
+  {r:'u',t:'California, Texas'},
+  {r:'ai',t:'Building criteria suggestions...',ms:45400,slow:true,sl:'45s, LLM building criteria card (~2,500 output tokens)',ph:'Phase 5 of 8',bar:62,pre:'Skip'},
+  {r:'u',t:'Skip'},
+  {r:'ai',t:'Done. Acme Webhook is now active.',ms:2800,ph:'Phase 8 of 8',bar:100,last:true},
+];
+
+let mIdx=0,mBusy=false,mTimer=null;
+
+function addBub(role,text,ms,slow,sl){
+  const c=document.getElementById('m-chat');
+  const b=document.createElement('div');b.className='bub '+role;b.textContent=text;
+  if(ms&&role==='ai'){
+    const t=document.createElement('div');t.className='bt'+(slow?' warn':'');
+    t.textContent=(ms/1000).toFixed(1)+'s response time';b.appendChild(t);
+    if(slow){const s=document.createElement('div');s.className='stag';s.textContent=sl;b.appendChild(s);}
+  }
+  c.appendChild(b);c.scrollTop=c.scrollHeight;
+}
+
+function setInput(val){
+  const i=document.getElementById('m-inp'),b=document.getElementById('m-btn');
+  if(val){i.value=val;i.style.color='#1a1a18';b.disabled=false;}
+  else{i.value='Waiting for AI...';i.style.color='#9b9a96';b.disabled=true;}
+}
+
+function mSend(){
+  if(mBusy||mIdx>=sc.length)return;
+  const s=sc[mIdx];if(s.r!=='u')return;
+  document.getElementById('m-btn').disabled=true;
+  addBub('u',s.t);mIdx++;
+  if(mIdx>=sc.length)return;
+  mBusy=true;setInput(null);
+  const c=document.getElementById('m-chat');
+  const ty=document.createElement('div');ty.className='typing-ind';ty.id='tyi';
+  ty.innerHTML='<div class="d"></div><div class="d"></div><div class="d"></div>';
+  c.appendChild(ty);c.scrollTop=c.scrollHeight;
+  const nx=sc[mIdx];
+  mTimer=setTimeout(()=>{
+    if(document.getElementById('tyi'))c.removeChild(ty);
+    addBub('ai',nx.t,nx.ms,nx.slow,nx.sl);
+    if(nx.ph)document.getElementById('m-tag').textContent=nx.ph;
+    if(nx.bar)document.getElementById('m-bar').style.width=nx.bar+'%';
+    mIdx++;mBusy=false;
+    if(nx.last)monoEnd();else setInput(sc[mIdx]?.t||'');
+  },Math.min((nx.ms||2000)/16,3000));
+}
+
+function monoEnd(){
+  setInput(null);
+  document.getElementById('m-res').classList.add('show');
+  checkBoth();
+}
+
+let hDone=false;
+function checkBoth(){
+  if(hDone&&document.getElementById('m-res').classList.contains('show')){
+    document.getElementById('pane-h').classList.add('winner');
+    document.getElementById('compare-panel').classList.add('show');
+  }
+}
+
+function fv(l,v,m){return`<div class="frow"><span class="flabel">${l}</span><span class="fval${m?' mono':''}">${v}</span></div>`;}
+function setFooter(h){document.getElementById('h-footer').innerHTML=h;}
+
+function renderS1(){
+  document.getElementById('h-tag').textContent='Step 1 of 3';
+  document.getElementById('h-bar').style.width='33%';
+  const b=document.getElementById('h-body');b.innerHTML='';
+  const s=document.createElement('div');s.className='steps';
+  s.innerHTML='<div class="sp act">1 Endpoint</div><div class="sp">2 Field mapping</div><div class="sp">3 Routing rules</div>';
+  b.appendChild(s);
+  const fc=document.createElement('div');fc.className='fcard';
+  fc.innerHTML=`<div class="fct">Connection details</div>${fv('Name','Acme Webhook')}${fv('Endpoint URL','https://acme.io/leads',true)}${fv('Content type','JSON')}${fv('Lead type','Mortgage leads')}`;
+  b.appendChild(fc);
+  setFooter('<button class="btn-pri" onclick="renderS2()">Next: field mapping â</button>');
+}
+
+function renderS2(){
+  document.getElementById('h-tag').textContent='Step 2 of 3';
+  document.getElementById('h-bar').style.width='66%';
+  const b=document.getElementById('h-body');b.innerHTML='';
+  const s=document.createElement('div');s.className='steps';
+  s.innerHTML='<div class="sp done">1 Endpoint</div><div class="sp act">2 Field mapping</div><div class="sp">3 Routing rules</div>';
+  b.appendChild(s);
+  const fc=document.createElement('div');fc.className='fcard';
+  fc.innerHTML=`<div class="fct">Posting instructions</div>${fv('JSON schema','{ "first_name": "John", "loan_amount": 250000, "state": "CA", "email": "j@j.com" }',true)}`;
+  b.appendChild(fc);
+  const hb=document.createElement('div');hb.id='hbox';hb.style.display='none';b.appendChild(hb);
+  setFooter('<button class="btn-ghost" onclick="renderS1()">â Back</button><button class="btn-pri" onclick="runHelper()">Analyze with AI helper â</button>');
+}
+
+function runHelper(){
+  const hb=document.getElementById('hbox');if(!hb)return;
+  hb.style.display='block';hb.className='hbox';
+  hb.style.background='#FAEEDA';hb.style.borderColor='#EF9F27';
+  hb.innerHTML='<div class="hbox-head"><div class="hdot" style="background:#EF9F27"></div><div class="htitle" style="color:#854F0B">Analyzing posting instructions...</div></div>';
+  setFooter('<span style="font-size:11px;color:#9b9a96;">Running field mapping helper...</span>');
+  setTimeout(()=>{
+    hb.style.background='#E1F5EE';hb.style.borderColor='#5DCAA5';
+    hb.innerHTML='<div class="hbox-head"><div class="hdot"></div><div class="htitle">Field mapping helper: 4 of 4 matched</div><div class="htime">2.1s</div></div>';
+    [['first_name','contact_first_name'],['loan_amount','requested_amount'],['state','target_state'],['email','contact_email']].forEach(([s,d])=>{
+      const r=document.createElement('div');r.className='mrow';
+      r.innerHTML=`<div class="mc">${s}</div><div class="ma">â</div><div class="mc">${d}</div><div class="chi">matched</div>`;
+      hb.appendChild(r);
+    });
+    const n=document.createElement('div');n.className='hnote';n.textContent='Review and adjust if needed. Accepted mappings apply on save.';
+    hb.appendChild(n);
+    document.getElementById('h-body').scrollTop=9999;
+    setFooter('<button class="btn-ghost" onclick="renderS2()">Edit</button><button class="btn-pri" onclick="renderS3()">Accept and continue â</button>');
+  },1600);
+}
+
+function renderS3(){
+  document.getElementById('h-tag').textContent='Step 3 of 3';
+  document.getElementById('h-bar').style.width='90%';
+  const b=document.getElementById('h-body');b.innerHTML='';
+  const s=document.createElement('div');s.className='steps';
+  s.innerHTML='<div class="sp done">1 Endpoint</div><div class="sp done">2 Field mapping</div><div class="sp act">3 Routing rules</div>';
+  b.appendChild(s);
+  const hd=document.createElement('div');hd.className='hbox';
+  hd.innerHTML='<div class="hbox-head"><div class="hdot"></div><div class="htitle">4 field mappings accepted</div></div>';
+  b.appendChild(hd);
+  const fc=document.createElement('div');fc.className='fcard';
+  fc.innerHTML=`<div class="fct">Routing rules</div>${fv('Price per lead','$200')}${fv('Exclusivity','Exclusive')}${fv('Target states','California, Texas')}`;
+  b.appendChild(fc);
+  setFooter('<button class="btn-ghost" onclick="renderS2()">â Back</button><button class="btn-outline">Save draft</button><button class="btn-pri" onclick="helperDone()">Activate â</button>');
+}
+
+function helperDone(){
+  hDone=true;
+  document.getElementById('h-tag').textContent='Active';
+  document.getElementById('h-bar').style.width='100%';
+  const b=document.getElementById('h-body');b.innerHTML='';
+  const s=document.createElement('div');s.className='steps';
+  s.innerHTML='<div class="sp done">1 Endpoint</div><div class="sp done">2 Field mapping</div><div class="sp done">3 Routing rules</div>';
+  b.appendChild(s);
+  const fc=document.createElement('div');fc.className='fcard';
+  fc.style.cssText='padding:1.5rem 1rem;text-align:center;';
+  fc.innerHTML=`<div style="font-size:14px;font-weight:500;margin-bottom:4px;">Acme Webhook active</div>
+  <div style="font-size:12px;color:#6b6a66;margin-bottom:12px;">4 fields mapped Â· CA, TX Â· $200 Â· Exclusive</div>
+  <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">
+    <span style="font-size:11px;padding:3px 10px;border-radius:99px;background:#E1F5EE;color:#0F6E56;">~2 min total</span>
+    <span style="font-size:11px;padding:3px 10px;border-radius:99px;background:#E1F5EE;color:#0F6E56;">3 product steps</span>
+    <span style="font-size:11px;padding:3px 10px;border-radius:99px;background:#E1F5EE;color:#0F6E56;">AI ran once Â· 2.1s</span>
+  </div>`;
+  b.appendChild(fc);
+  setFooter('');
+  document.getElementById('h-res').classList.add('show');
+  checkBoth();
+}
+
+function resetAll(){
+  clearTimeout(mTimer);
+  mIdx=0;mBusy=false;hDone=false;
+  document.getElementById('m-chat').innerHTML='';
+  document.getElementById('m-tag').textContent='Phase 1 of 8';
+  document.getElementById('m-bar').style.width='12%';
+  document.getElementById('m-res').classList.remove('show');
+  document.getElementById('h-res').classList.remove('show');
+  document.getElementById('pane-h').classList.remove('winner');
+  document.getElementById('compare-panel').classList.remove('show');
+  setInput(null);
+  const s0=sc[0];addBub('ai',s0.t,s0.ms);
+  document.getElementById('m-tag').textContent=s0.ph;
+  mIdx=1;setInput(sc[1].t);
+  renderS1();
+}
+
+const s0=sc[0];addBub('ai',s0.t,s0.ms);
+document.getElementById('m-tag').textContent=s0.ph;
+mIdx=1;setInput(sc[1].t);
+renderS1();
+</script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ai-setup-patterns â live demo</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --color-bg: #ffffff;
+    --color-bg-secondary: #f5f4f0;
+    --color-text-primary: #1a1a18;
+    --color-text-secondary: #6b6a66;
+    --color-text-tertiary: #9b9a96;
+    --color-border: rgba(0,0,0,0.1);
+    --color-border-secondary: rgba(0,0,0,0.18);
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-mono: "SF Mono", "Fira Code", monospace;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+  }
+  body { font-family: var(--font-sans); font-size: 14px; line-height: 1.6; color: var(--color-text-primary); background: var(--color-bg); padding: 2rem 1rem; }
+  .page { max-width: 960px; margin: 0 auto; }
+
+  .intro { margin-bottom: 16px; }
+  .intro-title { font-size: 16px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 4px; }
+  .intro-sub { font-size: 13px; color: var(--color-text-secondary); }
+  .intro-sub a { color: var(--color-text-secondary); text-decoration: none; border-bottom: 1px solid var(--color-border); }
+  .divider { height: 1px; background: var(--color-border); margin: 14px 0; }
+
+  .ctx { background: var(--color-bg-secondary); border: 0.5px solid var(--color-border); border-radius: var(--radius-md); padding: 10px 16px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .ctx-t { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+  .ctx-d { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+  .rbtn { font-size: 12px; padding: 5px 12px; border: 0.5px solid var(--color-border-secondary); border-radius: 6px; background: var(--color-bg); color: var(--color-text-secondary); cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+  .rbtn:hover { background: var(--color-bg-secondary); }
+
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .pane { border-radius: var(--radius-lg); border: 0.5px solid var(--color-border); background: var(--color-bg-secondary); display: flex; flex-direction: column; height: 480px; box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03); transition: box-shadow 0.2s; }
+  .pane:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.07), 0 8px 24px rgba(0,0,0,0.05); }
+  .pane.winner { border: 1.5px solid #1D9E75; }
+  .phead { padding: 10px 14px; border-bottom: 0.5px solid var(--color-border); background: var(--color-bg); display: flex; justify-content: space-between; align-items: flex-start; border-radius: var(--radius-lg) var(--radius-lg) 0 0; flex-shrink: 0; }
+  #pane-m .phead { border-top: 2px solid #EF9F27; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+  #pane-h .phead { border-top: 2px solid #1D9E75; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+  .ibadge { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; padding: 2px 7px; border-radius: 4px; background: #E6F1FB; color: #185FA5; display: inline-flex; align-items: center; gap: 3px; margin-top: 2px; }
+  .ibadge svg { flex-shrink: 0; }
+  .ptitle { font-size: 13px; font-weight: 500; }
+  .psub { font-size: 11px; color: var(--color-text-tertiary); margin-top: 1px; }
+  .ptag { font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px; }
+  .pbar { height: 2px; background: var(--color-border); flex-shrink: 0; }
+  .pbarfill { height: 100%; transition: width 0.5s; }
+  .amber { background: #EF9F27; } .teal { background: #1D9E75; }
+
+  .chat-scroll { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 7px; overflow-y: auto; min-height: 0; }
+  .bub { font-size: 12px; line-height: 1.5; padding: 8px 11px; border-radius: 9px; max-width: 86%; }
+  .bub.ai { background: var(--color-bg); border: 0.5px solid var(--color-border); color: var(--color-text-primary); align-self: flex-start; }
+  .bub.usr { background: #185FA5; color: #E6F1FB; align-self: flex-end; }
+  .bt { font-size: 10px; margin-top: 3px; color: var(--color-text-tertiary); }
+  .bt.warn { color: #BA7517; }
+  .stag { font-size: 10px; display: inline-block; margin-top: 3px; padding: 2px 7px; border-radius: 4px; background: #FAEEDA; color: #854F0B; }
+  .typing-ind { display: flex; gap: 3px; padding: 8px 11px; background: var(--color-bg); border: 0.5px solid var(--color-border); border-radius: 9px; align-self: flex-start; }
+  .d { width: 5px; height: 5px; border-radius: 50%; background: var(--color-text-tertiary); animation: bl 1.2s infinite; }
+  .d:nth-child(2) { animation-delay: .2s; } .d:nth-child(3) { animation-delay: .4s; }
+  @keyframes bl { 0%,80%,100% { opacity: .2; } 40% { opacity: 1; } }
+
+  .chat-foot { padding: 8px 12px; border-top: 0.5px solid var(--color-border); background: var(--color-bg); display: flex; gap: 6px; flex-shrink: 0; border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+  .cinput { flex: 1; font-size: 12px; font-family: var(--font-sans); padding: 6px 10px; border: 0.5px solid var(--color-border-secondary); border-radius: 6px; background: var(--color-bg-secondary); color: var(--color-text-primary); }
+  .sendbtn { font-size: 12px; font-weight: 500; font-family: var(--font-sans); padding: 6px 16px; border: none; border-radius: 6px; background: #185FA5; color: #E6F1FB; cursor: pointer; white-space: nowrap; }
+  .sendbtn:disabled { background: var(--color-bg-secondary); color: var(--color-text-tertiary); border: 0.5px solid var(--color-border); cursor: default; }
+
+  .resbar { padding: 8px 14px; border-top: 0.5px solid var(--color-border); display: none; justify-content: space-between; align-items: center; background: var(--color-bg); flex-shrink: 0; }
+  .resbar.show { display: flex; }
+  .rpill { font-size: 10px; font-weight: 500; padding: 2px 9px; border-radius: 99px; }
+  .rps { background: #FAEEDA; color: #854F0B; } .rpf { background: #E1F5EE; color: #0F6E56; }
+  .rlbl { font-size: 11px; color: var(--color-text-tertiary); }
+
+  .prod-layout { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .prod-scroll { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; min-height: 0; }
+  .prod-footer { padding: 8px 12px; border-top: 0.5px solid var(--color-border); background: var(--color-bg); display: flex; align-items: center; gap: 6px; flex-shrink: 0; border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+  .btn-ghost { font-size: 11px; font-family: var(--font-sans); padding: 5px 8px; border: none; background: none; color: var(--color-text-secondary); cursor: pointer; border-radius: 6px; white-space: nowrap; }
+  .btn-ghost:hover { background: var(--color-bg-secondary); }
+  .btn-outline { font-size: 11px; font-family: var(--font-sans); padding: 5px 10px; border: 0.5px solid var(--color-border-secondary); background: var(--color-bg); color: var(--color-text-primary); cursor: pointer; border-radius: 6px; white-space: nowrap; }
+  .btn-pri { font-size: 11px; font-weight: 500; font-family: var(--font-sans); padding: 5px 14px; border: none; border-radius: 6px; background: #185FA5; color: #E6F1FB; cursor: pointer; margin-left: auto; white-space: nowrap; }
+  .btn-pri:hover { background: #0C447C; }
+
+  .steps { display: flex; flex-shrink: 0; }
+  .sp { flex: 1; font-size: 11px; text-align: center; padding: 5px 4px; border: 0.5px solid var(--color-border); background: var(--color-bg); color: var(--color-text-tertiary); font-family: var(--font-sans); }
+  .sp:first-child { border-radius: 6px 0 0 6px; } .sp:last-child { border-radius: 0 6px 6px 0; }
+  .sp.act { color: var(--color-text-primary); font-weight: 500; background: var(--color-bg-secondary); }
+  .sp.done { background: #E1F5EE; color: #0F6E56; border-color: #5DCAA5; }
+
+  .fcard { background: var(--color-bg); border: 0.5px solid var(--color-border); border-radius: var(--radius-md); padding: 10px 12px; }
+  .fct { font-size: 10px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; }
+  .frow { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+  .frow:last-child { margin-bottom: 0; }
+  .flabel { font-size: 11px; color: var(--color-text-secondary); width: 88px; flex-shrink: 0; padding-top: 1px; }
+  .fval { flex: 1; font-size: 12px; color: var(--color-text-primary); padding: 5px 8px; background: var(--color-bg-secondary); border: 0.5px solid var(--color-border); border-radius: 6px; }
+  .fval.mono { font-family: var(--font-mono); font-size: 11px; max-height: 54px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; line-height: 1.5; }
+
+  .hbox { border: 0.5px solid #5DCAA5; border-radius: var(--radius-md); background: #E1F5EE; padding: 10px 12px; }
+  .hbox-head { display: flex; align-items: center; gap: 6px; margin-bottom: 7px; }
+  .hdot { width: 6px; height: 6px; border-radius: 50%; background: #1D9E75; flex-shrink: 0; }
+  .htitle { font-size: 11px; font-weight: 500; color: #0F6E56; flex: 1; }
+  .htime { font-size: 10px; color: #0F6E56; }
+  .mrow { display: grid; grid-template-columns: 1fr 14px 1fr 52px; gap: 4px; align-items: center; margin-bottom: 4px; }
+  .mc { font-size: 11px; padding: 3px 7px; background: var(--color-bg); border-radius: 4px; color: var(--color-text-primary); font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ma { font-size: 10px; color: #1D9E75; text-align: center; }
+  .chi { font-size: 10px; padding: 2px 6px; border-radius: 99px; background: rgba(29,158,117,.15); color: #0F6E56; text-align: center; }
+  .hnote { font-size: 11px; color: #085041; margin-top: 7px; padding-top: 7px; border-top: 0.5px solid #9FE1CB; }
+
+  .compare { display: none; margin-top: 20px; background: var(--color-bg-secondary); border: 0.5px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .compare.show { display: block; }
+  .compare-title { font-size: 13px; font-weight: 500; padding: 12px 16px; border-bottom: 0.5px solid var(--color-border); background: var(--color-bg); }
+  .ctable { width: 100%; border-collapse: collapse; }
+  .ctable th { font-size: 10px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .04em; padding: 9px 16px; text-align: left; border-bottom: 0.5px solid var(--color-border); background: var(--color-bg); }
+  .ctable th:not(:first-child) { text-align: center; }
+  .ctable td { font-size: 12px; padding: 10px 16px; border-bottom: 0.5px solid var(--color-border); }
+  .ctable tr:last-child td { border-bottom: none; }
+  .ctable td:not(:first-child) { text-align: center; }
+  .ctable td:first-child { color: var(--color-text-secondary); font-size: 11px; width: 36%; }
+  .ctable tr:hover td { background: var(--color-bg-secondary); }
+  .bad { color: #993C1D; font-weight: 500; } .good { color: #0F6E56; font-weight: 500; }
+
+  .outlook { margin-top: 24px; padding-top: 20px; border-top: 0.5px solid var(--color-border); }
+  .outlook-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 12px; }
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content: ""; position: absolute; left: 9px; top: 8px; bottom: 8px; width: 1.5px; background: linear-gradient(to bottom, #185FA5, #1D9E75, #534AB7, #854F0B); border-radius: 1px; }
+  .tl-item { position: relative; padding-bottom: 16px; }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-dot { position: absolute; left: -23px; top: 3px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid; background: var(--color-bg); }
+  .tl-dot.d1 { border-color: #185FA5; } .tl-dot.d2 { border-color: #1D9E75; } .tl-dot.d3 { border-color: #534AB7; } .tl-dot.d4 { border-color: #854F0B; }
+  .tl-label { font-size: 10px; font-weight: 500; margin-bottom: 2px; }
+  .tl-l1 { color: #185FA5; } .tl-l2 { color: #0F6E56; } .tl-l3 { color: #534AB7; } .tl-l4 { color: #854F0B; }
+  .tl-title { font-size: 12px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 2px; }
+  .tl-desc { font-size: 11px; color: var(--color-text-secondary); line-height: 1.5; }
+
+  .page-footer { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 0.5px solid var(--color-border); font-size: 12px; color: var(--color-text-tertiary); display: flex; justify-content: space-between; align-items: center; }
+  .page-footer a { color: var(--color-text-secondary); text-decoration: none; border-bottom: 1px solid var(--color-border); }
+
+  .explain { margin-bottom: 10px; }
+  .explain-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch; }
+  .explain-card { background: transparent; border-radius: var(--radius-md); padding: 6px 10px; display: flex; flex-direction: column; border-top: none; border-left: 2px solid transparent; }
+  .explain-mono { border-left-color: #EF9F27; }
+  .explain-helper { border-left-color: #1D9E75; }
+  .explain-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .explain-title { font-size: 11px; font-weight: 600; color: var(--color-text-primary); }
+  .explain-desc { font-size: 11px; color: var(--color-text-tertiary); line-height: 1.5; flex: 1; }
+  .explain-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
+  .etag { font-size: 10px; font-weight: 500; padding: 1px 7px; border-radius: 99px; }
+  .etag-warn { background: #FAEEDA; color: #854F0B; }
+  .etag-good { background: #E1F5EE; color: #0F6E56; }
+
+  @media (max-width: 640px) {
+    .cols { grid-template-columns: 1fr; }
+    .explain-cols { grid-template-columns: 1fr; }
+    .pane { height: 420px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="intro">
+    <div class="intro-title">ai-setup-patterns â live demo</div>
+    <div class="intro-sub">Companion to the <a href="https://github.com/felipefaraone/ai-setup-patterns">GitHub repository</a>. Same setup task, two architectures. Interact with both sides and see the difference in complexity, speed, and where responsibility lives.</div>
+  </div>
+  <div class="divider"></div>
+
+  <div class="ctx">
+    <div>
+      <div class="ctx-t">Task: set up a webhook integration for a new buyer</div>
+      <div class="ctx-d">Connect their endpoint, map source fields to destination fields, set pricing and routing rules.</div>
+    </div>
+    <button class="rbtn" onclick="resetAll()">âº Reset</button>
+  </div>
+
+
+  <div class="explain">
+    <div class="explain-cols">
+      <div class="explain-card explain-mono">
+        <div class="explain-head">
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#BA7517" stroke-width="1.5"/><path d="M10 5v6M7 8l3 3 3-3" stroke="#BA7517" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="15" r="1" fill="#BA7517"/></svg>
+          <div class="explain-title">Left â AI owns the entire flow</div>
+        </div>
+        <div class="explain-desc">Every step through the model. Eight phases, multiple round trips, each a chance to skip, stall, or hallucinate.</div>
+        <div class="explain-tags">
+          <span class="etag etag-warn">8 phases</span>
+          <span class="etag etag-warn">20 exchanges</span>
+          <span class="etag etag-warn">~8 min</span>
+        </div>
+      </div>
+      <div class="explain-card explain-helper">
+        <div class="explain-head">
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#1D9E75" stroke-width="1.5"/><path d="M6.5 10.5l2.5 2.5 5-5" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="explain-title">Right â Product owns the flow</div>
+        </div>
+        <div class="explain-desc">AI runs once for field mapping. Everything else is a normal product screen. Faster, testable, predictable.</div>
+        <div class="explain-tags">
+          <span class="etag etag-good">3 steps</span>
+          <span class="etag etag-good">1 AI call</span>
+          <span class="etag etag-good">~2 min</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="cols">
+    <div class="pane" id="pane-m">
+      <div class="phead">
+        <div><div class="ptitle">All-in-one assistant</div><div class="psub">What shipped â the MVP</div></div>
+        <div style="text-align:right"><span class="ibadge"><svg width="8" height="8" viewBox="0 0 8 8" fill="none"><polygon points="1,0 7,4 1,8" fill="#185FA5"/></svg>Interactive</span><div class="ptag" id="m-tag" style="margin-top:3px">Phase 1 of 8</div></div>
+      </div>
+      <div class="pbar"><div class="pbarfill amber" id="m-bar" style="width:12%"></div></div>
+      <div class="chat-scroll" id="m-chat"></div>
+      <div class="chat-foot">
+        <input class="cinput" id="m-inp" readonly placeholder="Waiting for AI..." />
+        <button class="sendbtn" id="m-btn" onclick="mSend()" disabled>Send</button>
+      </div>
+      <div class="resbar" id="m-res">
+        <span class="rlbl">Completed</span>
+        <span class="rpill rps">~8 min Â· 20 exchanges Â· AI did everything</span>
+      </div>
+    </div>
+
+    <div class="pane" id="pane-h">
+      <div class="phead">
+        <div><div class="ptitle">Embedded helpers</div><div class="psub">What comes next â the pivot</div></div>
+        <div style="text-align:right"><span class="ibadge"><svg width="8" height="8" viewBox="0 0 8 8" fill="none"><polygon points="1,0 7,4 1,8" fill="#185FA5"/></svg>Interactive</span><div class="ptag" id="h-tag" style="margin-top:3px">Step 1 of 3</div></div>
+      </div>
+      <div class="pbar"><div class="pbarfill teal" id="h-bar" style="width:33%"></div></div>
+      <div class="prod-layout">
+        <div class="prod-scroll" id="h-body"></div>
+        <div class="prod-footer" id="h-footer"></div>
+      </div>
+      <div class="resbar" id="h-res">
+        <span class="rlbl">Completed</span>
+        <span class="rpill rpf">~2 min Â· 3 steps Â· AI ran once for 2.1s</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="compare" id="compare-panel">
+    <div class="compare-title">What the numbers actually mean</div>
+    <table class="ctable">
+      <thead>
+        <tr><th></th><th>All-in-one assistant</th><th>Embedded helpers</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Total time</td><td class="bad">~8 min</td><td class="good">~2 min</td></tr>
+        <tr><td>User interactions</td><td class="bad">20 exchanges</td><td class="good">3 steps</td></tr>
+        <tr><td>Where AI ran</td><td class="bad">Every single step</td><td class="good">Once, for 2.1s</td></tr>
+        <tr><td>Who controls sequencing</td><td class="bad">The prompt</td><td class="good">The product</td></tr>
+        <tr><td>Who controls validation</td><td class="bad">The prompt</td><td class="good">The product</td></tr>
+        <tr><td>What breaks if model updates</td><td class="bad">The entire flow</td><td class="good">One helper, one task</td></tr>
+        <tr><td>Can you write a unit test?</td><td class="bad">No</td><td class="good">Yes â input â output</td></tr>
+        <tr><td>Failure surface</td><td class="bad">Any of 8 phases, any step</td><td class="good">One task, one place</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="outlook">
+    <div class="outlook-title">Whatâs next â from MVP (Phase 0) to production</div>
+    <div style="font-size:12px;color:#6b6a66;margin-bottom:12px;line-height:1.6;">The all-in-one assistant is <strong style="color:#1a1a18;">Phase 0 â the MVP that shipped</strong>. It proved the concept and revealed what needs to change. Hereâs where it goes from here:</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot d1"></div>
+        <div class="tl-label tl-l1">Phase 1</div>
+        <div class="tl-title">Helpers prove value</div>
+        <div class="tl-desc">One task. One helper. Measurable outcome. Field mapping, schema parsing, posting instructions â each solved in context.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot d2"></div>
+        <div class="tl-label tl-l2">Phase 2</div>
+        <div class="tl-title">Helpers become a reusable AI layer</div>
+        <div class="tl-desc">The same field mapping helper gets called from any integration screen. The investment compounds instead of being rebuilt per use case.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot d3"></div>
+        <div class="tl-label tl-l3">Phase 3</div>
+        <div class="tl-title">Assistant becomes a routing layer</div>
+        <div class="tl-desc">The assistant understands intent and routes the user to the right screen and the right helper. It coordinates â it doesnât execute.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot d4"></div>
+        <div class="tl-label tl-l4">Phase 4</div>
+        <div class="tl-title">System becomes proactive</div>
+        <div class="tl-desc">With helpers running and generating data, the product surfaces insights without being asked. The AI shifts from reactive to ambient.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Built by <a href="https://felipefaraone.com">Felipe Faraone</a></span>
+    <a href="https://github.com/felipefaraone/ai-setup-patterns">View on GitHub â</a>
+  </div>
+
+</div>
+
+<script>
+const sc=[
+  {r:'ai',t:"Hi! I'll guide you through the full setup. What's the name of this integration?",ms:3200,ph:'Phase 1 of 8',bar:12,pre:'Acme Webhook'},
+  {r:'u',t:'Acme Webhook'},
+  {r:'ai',t:"Got it. What's the destination webhook URL?",ms:4100,ph:'Phase 1 of 8',bar:12,pre:'https://acme.io/leads'},
+  {r:'u',t:'https://acme.io/leads'},
+  {r:'ai',t:'Loading your lead types...',ms:17900,slow:true,sl:'18s â LLM generating lead type selector card',ph:'Phase 2 of 8',bar:25,pre:'Mortgage leads'},
+  {r:'u',t:'Mortgage leads'},
+  {r:'ai',t:'Delivery schedule â 24/7 or specific hours?',ms:5100,ph:'Phase 3 of 8',bar:37,pre:'24/7'},
+  {r:'u',t:'24/7'},
+  {r:'ai',t:'Paste your JSON schema so I can map your fields.',ms:6800,ph:'Phase 3 of 8',bar:37,pre:'{ "first_name": "...", "loan_amount": 250000 }'},
+  {r:'u',t:'{ "first_name": "...", "loan_amount": 250000 }'},
+  {r:'ai',t:'Generating field mapping preview...',ms:51800,slow:true,sl:'52s â LLM building mapping card (~4,000 output tokens)',ph:'Phase 3 of 8',bar:37,pre:'Confirmed'},
+  {r:'u',t:'Confirmed'},
+  {r:'ai',t:'Price per lead?',ms:4400,ph:'Phase 5 of 8',bar:62,pre:'$200'},
+  {r:'u',t:'$200'},
+  {r:'ai',t:'Exclusive or shared routing?',ms:3800,ph:'Phase 5 of 8',bar:62,pre:'Exclusive'},
+  {r:'u',t:'Exclusive'},
+  {r:'ai',t:'Which states should this account target?',ms:9400,ph:'Phase 5 of 8',bar:62,pre:'California, Texas'},
+  {r:'u',t:'California, Texas'},
+  {r:'ai',t:'Building criteria suggestions...',ms:45400,slow:true,sl:'45s â LLM building criteria card (~2,500 output tokens)',ph:'Phase 5 of 8',bar:62,pre:'Skip'},
+  {r:'u',t:'Skip'},
+  {r:'ai',t:'Done. Acme Webhook is now active.',ms:2800,ph:'Phase 8 of 8',bar:100,last:true},
+];
+
+let mIdx=0,mBusy=false,mTimer=null;
+
+function addBub(role,text,ms,slow,sl){
+  const c=document.getElementById('m-chat');
+  const b=document.createElement('div');b.className='bub '+role;b.textContent=text;
+  if(ms&&role==='ai'){
+    const t=document.createElement('div');t.className='bt'+(slow?' warn':'');
+    t.textContent=(ms/1000).toFixed(1)+'s response time';b.appendChild(t);
+    if(slow){const s=document.createElement('div');s.className='stag';s.textContent=sl;b.appendChild(s);}
+  }
+  c.appendChild(b);c.scrollTop=c.scrollHeight;
+}
+
+function setInput(val){
+  const i=document.getElementById('m-inp'),b=document.getElementById('m-btn');
+  if(val){i.value=val;i.style.color='#1a1a18';b.disabled=false;}
+  else{i.value='Waiting for AI...';i.style.color='#9b9a96';b.disabled=true;}
+}
+
+function mSend(){
+  if(mBusy||mIdx>=sc.length)return;
+  const s=sc[mIdx];if(s.r!=='u')return;
+  document.getElementById('m-btn').disabled=true;
+  addBub('u',s.t);mIdx++;
+  if(mIdx>=sc.length)return;
+  mBusy=true;setInput(null);
+  const c=document.getElementById('m-chat');
+  const ty=document.createElement('div');ty.className='typing-ind';ty.id='tyi';
+  ty.innerHTML='<div class="d"></div><div class="d"></div><div class="d"></div>';
+  c.appendChild(ty);c.scrollTop=c.scrollHeight;
+  const nx=sc[mIdx];
+  mTimer=setTimeout(()=>{
+    if(document.getElementById('tyi'))c.removeChild(ty);
+    addBub('ai',nx.t,nx.ms,nx.slow,nx.sl);
+    if(nx.ph)document.getElementById('m-tag').textContent=nx.ph;
+    if(nx.bar)document.getElementById('m-bar').style.width=nx.bar+'%';
+    mIdx++;mBusy=false;
+    if(nx.last)monoEnd();else setInput(sc[mIdx]?.t||'');
+  },Math.min((nx.ms||2000)/16,3000));
+}
+
+function monoEnd(){
+  setInput(null);
+  document.getElementById('m-res').classList.add('show');
+  checkBoth();
+}
+
+let hDone=false;
+function checkBoth(){
+  if(hDone&&document.getElementById('m-res').classList.contains('show')){
+    document.getElementById('pane-h').classList.add('winner');
+    document.getElementById('compare-panel').classList.add('show');
+  }
+}
+
+function fv(l,v,m){return`<div class="frow"><span class="flabel">${l}</span><span class="fval${m?' mono':''}">${v}</span></div>`;}
+function setFooter(h){document.getElementById('h-footer').innerHTML=h;}
+
+function renderS1(){
+  document.getElementById('h-tag').textContent='Step 1 of 3';
+  document.getElementById('h-bar').style.width='33%';
+  const b=document.getElementById('h-body');b.innerHTML='';
+  const s=document.createElement('div');s.className='steps';
+  s.innerHTML='<div class="sp act">1 Endpoint</div><div class="sp">2 Field mapping</div><div class="sp">3 Routing rules</div>';
+  b.appendChild(s);
+  const fc=document.createElement('div');fc.className='fcard';
+  fc.innerHTML=`<div class="fct">Connection details</div>${fv('Name','Acme Webhook')}${fv('Endpoint URL','https://acme.io/leads',true)}${fv('Content type','JSON')}${fv('Lead type','Mortgage leads')}`;
+  b.appendChild(fc);
+  setFooter('<button class="btn-pri" onclick="renderS2()">Next â field mapping â</button>');
+}
+
+function renderS2(){
+  document.getElementById('h-tag').textContent='Step 2 of 3';
+  document.getElementById('h-bar').style.width='66%';
+  const b=document.getElementById('h-body');b.innerHTML='';
+  const s=document.createElement('div');s.className='steps';
+  s.innerHTML='<div class="sp done">1 Endpoint</div><div class="sp act">2 Field mapping</div><div class="sp">3 Routing rules</div>';
+  b.appendChild(s);
+  const fc=document.createElement('div');fc.className='fcard';
+  fc.innerHTML=`<div class="fct">Posting instructions</div>${fv('JSON schema','{ "first_name": "John", "loan_amount": 250000, "state": "CA", "email": "j@j.com" }',true)}`;
+  b.appendChild(fc);
+  const hb=document.createElement('div');hb.id='hbox';hb.style.display='none';b.appendChild(hb);
+  setFooter('<button class="btn-ghost" onclick="renderS1()">â Back</button><button class="btn-pri" onclick="runHelper()">Analyze with AI helper â</button>');
+}
+
+function runHelper(){
+  const hb=document.getElementById('hbox');if(!hb)return;
+  hb.style.display='block';hb.className='hbox';
+  hb.style.background='#FAEEDA';hb.style.borderColor='#EF9F27';
+  hb.innerHTML='<div class="hbox-head"><div class="hdot" style="background:#EF9F27"></div><div class="htitle" style="color:#854F0B">Analyzing posting instructions...</div></div>';
+  setFooter('<span style="font-size:11px;color:#9b9a96;">Running field mapping helper...</span>');
+  setTimeout(()=>{
+    hb.style.background='#E1F5EE';hb.style.borderColor='#5DCAA5';
+    hb.innerHTML='<div class="hbox-head"><div class="hdot"></div><div class="htitle">Field mapping helper â 4 of 4 matched</div><div class="htime">2.1s</div></div>';
+    [['first_name','contact_first_name'],['loan_amount','requested_amount'],['state','target_state'],['email','contact_email']].forEach(([s,d])=>{
+      const r=document.createElement('div');r.className='mrow';
+      r.innerHTML=`<div class="mc">${s}</div><div class="ma">â</div><div class="mc">${d}</div><div class="chi">matched</div>`;
+      hb.appendChild(r);
+    });
+    const n=document.createElement('div');n.className='hnote';n.textContent='Review and adjust if needed. Accepted mappings apply on save.';
+    hb.appendChild(n);
+    document.getElementById('h-body').scrollTop=9999;
+    setFooter('<button class="btn-ghost" onclick="renderS2()">Edit</button><button class="btn-pri" onclick="renderS3()">Accept and continue â</button>');
+  },1600);
+}
+
+function renderS3(){
+  document.getElementById('h-tag').textContent='Step 3 of 3';
+  document.getElementById('h-bar').style.width='90%';
+  const b=document.getElementById('h-body');b.innerHTML='';
+  const s=document.createElement('div');s.className='steps';
+  s.innerHTML='<div class="sp done">1 Endpoint</div><div class="sp done">2 Field mapping</div><div class="sp act">3 Routing rules</div>';
+  b.appendChild(s);
+  const hd=document.createElement('div');hd.className='hbox';
+  hd.innerHTML='<div class="hbox-head"><div class="hdot"></div><div class="htitle">4 field mappings accepted</div></div>';
+  b.appendChild(hd);
+  const fc=document.createElement('div');fc.className='fcard';
+  fc.innerHTML=`<div class="fct">Routing rules</div>${fv('Price per lead','$200')}${fv('Exclusivity','Exclusive')}${fv('Target states','California, Texas')}`;
+  b.appendChild(fc);
+  setFooter('<button class="btn-ghost" onclick="renderS2()">â Back</button><button class="btn-outline">Save draft</button><button class="btn-pri" onclick="helperDone()">Activate â</button>');
+}
+
+function helperDone(){
+  hDone=true;
+  document.getElementById('h-tag').textContent='Active';
+  document.getElementById('h-bar').style.width='100%';
+  const b=document.getElementById('h-body');b.innerHTML='';
+  const s=document.createElement('div');s.className='steps';
+  s.innerHTML='<div class="sp done">1 Endpoint</div><div class="sp done">2 Field mapping</div><div class="sp done">3 Routing rules</div>';
+  b.appendChild(s);
+  const fc=document.createElement('div');fc.className='fcard';
+  fc.style.cssText='padding:1.5rem 1rem;text-align:center;';
+  fc.innerHTML=`<div style="font-size:14px;font-weight:500;margin-bottom:4px;">Acme Webhook active</div>
+  <div style="font-size:12px;color:#6b6a66;margin-bottom:12px;">4 fields mapped Â· CA, TX Â· $200 Â· Exclusive</div>
+  <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">
+    <span style="font-size:11px;padding:3px 10px;border-radius:99px;background:#E1F5EE;color:#0F6E56;">~2 min total</span>
+    <span style="font-size:11px;padding:3px 10px;border-radius:99px;background:#E1F5EE;color:#0F6E56;">3 product steps</span>
+    <span style="font-size:11px;padding:3px 10px;border-radius:99px;background:#E1F5EE;color:#0F6E56;">AI ran once Â· 2.1s</span>
+  </div>`;
+  b.appendChild(fc);
+  setFooter('');
+  document.getElementById('h-res').classList.add('show');
+  checkBoth();
+}
+
+function resetAll(){
+  clearTimeout(mTimer);
+  mIdx=0;mBusy=false;hDone=false;
+  document.getElementById('m-chat').innerHTML='';
+  document.getElementById('m-tag').textContent='Phase 1 of 8';
+  document.getElementById('m-bar').style.width='12%';
+  document.getElementById('m-res').classList.remove('show');
+  document.getElementById('h-res').classList.remove('show');
+  document.getElementById('pane-h').classList.remove('winner');
+  document.getElementById('compare-panel').classList.remove('show');
+  setInput(null);
+  const s0=sc[0];addBub('ai',s0.t,s0.ms);
+  document.getElementById('m-tag').textContent=s0.ph;
+  mIdx=1;setInput(sc[1].t);
+  renderS1();
+}
+
+const s0=sc[0];addBub('ai',s0.t,s0.ms);
+document.getElementById('m-tag').textContent=s0.ph;
+mIdx=1;setInput(sc[1].t);
+renderS1();
+</script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ai-setup-patterns: live demo</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --color-bg: #ffffff;
+    --color-bg-secondary: #f5f4f0;
+    --color-text-primary: #1a1a18;
+    --color-text-secondary: #6b6a66;
+    --color-text-tertiary: #9b9a96;
+    --color-border: rgba(0,0,0,0.1);
+    --color-border-secondary: rgba(0,0,0,0.18);
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-mono: "SF Mono", "Fira Code", monospace;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+  }
+  body { font-family: var(--font-sans); font-size: 14px; line-height: 1.6; color: var(--color-text-primary); background: var(--color-bg); padding: 2rem 1rem; }
+  .page { max-width: 960px; margin: 0 auto; }
+
+  .intro { margin-bottom: 16px; }
+  .intro-title { font-size: 16px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 4px; }
+  .intro-sub { font-size: 13px; color: var(--color-text-secondary); }
+  .intro-sub a { color: var(--color-text-secondary); text-decoration: none; border-bottom: 1px solid var(--color-border); }
+  .divider { height: 1px; background: var(--color-border); margin: 14px 0; }
+
+  .ctx { background: var(--color-bg-secondary); border: 0.5px solid var(--color-border); border-radius: var(--radius-md); padding: 10px 16px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .ctx-t { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+  .ctx-d { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+  .rbtn { font-size: 12px; padding: 5px 12px; border: 0.5px solid var(--color-border-secondary); border-radius: 6px; background: var(--color-bg); color: var(--color-text-secondary); cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+  .rbtn:hover { background: var(--color-bg-secondary); }
+
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .pane { border-radius: var(--radius-lg); border: 0.5px solid var(--color-border); background: var(--color-bg-secondary); display: flex; flex-direction: column; height: 480px; box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03); transition: box-shadow 0.2s; }
+  .pane:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.07), 0 8px 24px rgba(0,0,0,0.05); }
+  .pane.winner { border: 1.5px solid #1D9E75; }
+  .phead { padding: 10px 14px; border-bottom: 0.5px solid var(--color-border); background: var(--color-bg); display: flex; justify-content: space-between; align-items: flex-start; border-radius: var(--radius-lg) var(--radius-lg) 0 0; flex-shrink: 0; }
+  #pane-m .phead { border-top: 2px solid #EF9F27; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+  #pane-h .phead { border-top: 2px solid #1D9E75; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+  .ibadge { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; padding: 2px 7px; border-radius: 4px; background: #E6F1FB; color: #185FA5; display: inline-flex; align-items: center; gap: 3px; margin-top: 2px; }
+  .ibadge svg { flex-shrink: 0; }
+  .ptitle { font-size: 13px; font-weight: 500; }
+  .psub { font-size: 11px; color: var(--color-text-tertiary); margin-top: 1px; }
+  .ptag { font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px; }
+  .pbar { height: 2px; background: var(--color-border); flex-shrink: 0; }
+  .pbarfill { height: 100%; transition: width 0.5s; }
+  .amber { background: #EF9F27; } .teal { background: #1D9E75; }
+
+  .chat-scroll { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 7px; overflow-y: auto; min-height: 0; }
+  .bub { font-size: 12px; line-height: 1.5; padding: 8px 11px; border-radius: 9px; max-width: 86%; }
+  .bub.ai { background: var(--color-bg); border: 0.5px solid var(--color-border); color: var(--color-text-primary); align-self: flex-start; }
+  .bub.usr { background: #185FA5; color: #E6F1FB; align-self: flex-end; }
+  .bt { font-size: 10px; margin-top: 3px; color: var(--color-text-tertiary); }
+  .bt.warn { color: #BA7517; }
+  .stag { font-size: 10px; display: inline-block; margin-top: 3px; padding: 2px 7px; border-radius: 4px; background: #FAEEDA; color: #854F0B; }
+  .typing-ind { display: flex; gap: 3px; padding: 8px 11px; background: var(--color-bg); border: 0.5px solid var(--color-border); border-radius: 9px; align-self: flex-start; }
+  .d { width: 5px; height: 5px; border-radius: 50%; background: var(--color-text-tertiary); animation: bl 1.2s infinite; }
+  .d:nth-child(2) { animation-delay: .2s; } .d:nth-child(3) { animation-delay: .4s; }
+  @keyframes bl { 0%,80%,100% { opacity: .2; } 40% { opacity: 1; } }
+
+  .chat-foot { padding: 8px 12px; border-top: 0.5px solid var(--color-border); background: var(--color-bg); display: flex; gap: 6px; flex-shrink: 0; border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+  .cinput { flex: 1; font-size: 12px; font-family: var(--font-sans); padding: 6px 10px; border: 0.5px solid var(--color-border-secondary); border-radius: 6px; background: var(--color-bg-secondary); color: var(--color-text-primary); }
+  .sendbtn { font-size: 12px; font-weight: 500; font-family: var(--font-sans); padding: 6px 16px; border: none; border-radius: 6px; background: #185FA5; color: #E6F1FB; cursor: pointer; white-space: nowrap; }
+  .sendbtn:disabled { background: var(--color-bg-secondary); color: var(--color-text-tertiary); border: 0.5px solid var(--color-border); cursor: default; }
+
+  .resbar { padding: 8px 14px; border-top: 0.5px solid var(--color-border); display: none; justify-content: space-between; align-items: center; background: var(--color-bg); flex-shrink: 0; }
+  .resbar.show { display: flex; }
+  .rpill { font-size: 10px; font-weight: 500; padding: 2px 9px; border-radius: 99px; }
+  .rps { background: #FAEEDA; color: #854F0B; } .rpf { background: #E1F5EE; color: #0F6E56; }
+  .rlbl { font-size: 11px; color: var(--color-text-tertiary); }
+
+  .prod-layout { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .prod-scroll { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; min-height: 0; }
+  .prod-footer { padding: 8px 12px; border-top: 0.5px solid var(--color-border); background: var(--color-bg); display: flex; align-items: center; gap: 6px; flex-shrink: 0; border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+  .btn-ghost { font-size: 11px; font-family: var(--font-sans); padding: 5px 8px; border: none; background: none; color: var(--color-text-secondary); cursor: pointer; border-radius: 6px; white-space: nowrap; }
+  .btn-ghost:hover { background: var(--color-bg-secondary); }
+  .btn-outline { font-size: 11px; font-family: var(--font-sans); padding: 5px 10px; border: 0.5px solid var(--color-border-secondary); background: var(--color-bg); color: var(--color-text-primary); cursor: pointer; border-radius: 6px; white-space: nowrap; }
+  .btn-pri { font-size: 11px; font-weight: 500; font-family: var(--font-sans); padding: 5px 14px; border: none; border-radius: 6px; background: #185FA5; color: #E6F1FB; cursor: pointer; margin-left: auto; white-space: nowrap; }
+  .btn-pri:hover { background: #0C447C; }
+
+  .steps { display: flex; flex-shrink: 0; }
+  .sp { flex: 1; font-size: 11px; text-align: center; padding: 5px 4px; border: 0.5px solid var(--color-border); background: var(--color-bg); color: var(--color-text-tertiary); font-family: var(--font-sans); }
+  .sp:first-child { border-radius: 6px 0 0 6px; } .sp:last-child { border-radius: 0 6px 6px 0; }
+  .sp.act { color: var(--color-text-primary); font-weight: 500; background: var(--color-bg-secondary); }
+  .sp.done { background: #E1F5EE; color: #0F6E56; border-color: #5DCAA5; }
+
+  .fcard { background: var(--color-bg); border: 0.5px solid var(--color-border); border-radius: var(--radius-md); padding: 10px 12px; }
+  .fct { font-size: 10px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; }
+  .frow { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+  .frow:last-child { margin-bottom: 0; }
+  .flabel { font-size: 11px; color: var(--color-text-secondary); width: 88px; flex-shrink: 0; padding-top: 1px; }
+  .fval { flex: 1; font-size: 12px; color: var(--color-text-primary); padding: 5px 8px; background: var(--color-bg-secondary); border: 0.5px solid var(--color-border); border-radius: 6px; }
+  .fval.mono { font-family: var(--font-mono); font-size: 11px; max-height: 54px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; line-height: 1.5; }
+
+  .hbox { border: 0.5px solid #5DCAA5; border-radius: var(--radius-md); background: #E1F5EE; padding: 10px 12px; }
+  .hbox-head { display: flex; align-items: center; gap: 6px; margin-bottom: 7px; }
+  .hdot { width: 6px; height: 6px; border-radius: 50%; background: #1D9E75; flex-shrink: 0; }
+  .htitle { font-size: 11px; font-weight: 500; color: #0F6E56; flex: 1; }
+  .htime { font-size: 10px; color: #0F6E56; }
+  .mrow { display: grid; grid-template-columns: 1fr 14px 1fr 52px; gap: 4px; align-items: center; margin-bottom: 4px; }
+  .mc { font-size: 11px; padding: 3px 7px; background: var(--color-bg); border-radius: 4px; color: var(--color-text-primary); font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ma { font-size: 10px; color: #1D9E75; text-align: center; }
+  .chi { font-size: 10px; padding: 2px 6px; border-radius: 99px; background: rgba(29,158,117,.15); color: #0F6E56; text-align: center; }
+  .hnote { font-size: 11px; color: #085041; margin-top: 7px; padding-top: 7px; border-top: 0.5px solid #9FE1CB; }
+
+  .compare { display: none; margin-top: 20px; background: var(--color-bg-secondary); border: 0.5px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .compare.show { display: block; }
+  .compare-title { font-size: 13px; font-weight: 500; padding: 12px 16px; border-bottom: 0.5px solid var(--color-border); background: var(--color-bg); }
+  .ctable { width: 100%; border-collapse: collapse; }
+  .ctable th { font-size: 10px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .04em; padding: 9px 16px; text-align: left; border-bottom: 0.5px solid var(--color-border); background: var(--color-bg); }
+  .ctable th:not(:first-child) { text-align: center; }
+  .ctable td { font-size: 12px; padding: 10px 16px; border-bottom: 0.5px solid var(--color-border); }
+  .ctable tr:last-child td { border-bottom: none; }
+  .ctable td:not(:first-child) { text-align: center; }
+  .ctable td:first-child { color: var(--color-text-secondary); font-size: 11px; width: 36%; }
+  .ctable tr:hover td { background: var(--color-bg-secondary); }
+  .bad { color: #993C1D; font-weight: 500; } .good { color: #0F6E56; font-weight: 500; }
+
+  .outlook { margin-top: 24px; padding-top: 20px; border-top: 0.5px solid var(--color-border); }
+  .outlook-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 12px; }
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content: ""; position: absolute; left: 9px; top: 8px; bottom: 8px; width: 1.5px; background: linear-gradient(to bottom, #185FA5, #1D9E75, #534AB7, #854F0B); border-radius: 1px; }
+  .tl-item { position: relative; padding-bottom: 16px; }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-dot { position: absolute; left: -23px; top: 3px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid; background: var(--color-bg); }
+  .tl-dot.d1 { border-color: #185FA5; } .tl-dot.d2 { border-color: #1D9E75; } .tl-dot.d3 { border-color: #534AB7; } .tl-dot.d4 { border-color: #854F0B; }
+  .tl-label { font-size: 10px; font-weight: 500; margin-bottom: 2px; }
+  .tl-l1 { color: #185FA5; } .tl-l2 { color: #0F6E56; } .tl-l3 { color: #534AB7; } .tl-l4 { color: #854F0B; }
+  .tl-title { font-size: 12px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 2px; }
+  .tl-desc { font-size: 11px; color: var(--color-text-secondary); line-height: 1.5; }
+
+  .page-footer { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 0.5px solid var(--color-border); font-size: 12px; color: var(--color-text-tertiary); display: flex; justify-content: space-between; align-items: center; }
+  .page-footer a { color: var(--color-text-secondary); text-decoration: none; border-bottom: 1px solid var(--color-border); }
+
+  .explain { margin-bottom: 10px; }
+  .explain-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch; }
+  .explain-card { background: transparent; border-radius: var(--radius-md); padding: 6px 10px; display: flex; flex-direction: column; border-top: none; border-left: 2px solid transparent; }
+  .explain-mono { border-left-color: #EF9F27; }
+  .explain-helper { border-left-color: #1D9E75; }
+  .explain-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .explain-title { font-size: 11px; font-weight: 600; color: var(--color-text-primary); }
+  .explain-desc { font-size: 11px; color: var(--color-text-tertiary); line-height: 1.5; flex: 1; }
+  .explain-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
+  .etag { font-size: 10px; font-weight: 500; padding: 1px 7px; border-radius: 99px; }
+  .etag-warn { background: #FAEEDA; color: #854F0B; }
+  .etag-good { background: #E1F5EE; color: #0F6E56; }
+
+  @media (max-width: 640px) {
+    .cols { grid-template-columns: 1fr; }
+    .explain-cols { grid-template-columns: 1fr; }
+    .pane { height: 420px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="intro">
+    <div class="intro-title">ai-setup-patterns: live demo</div>
+    <div class="intro-sub">Companion to the <a href="https://github.com/felipefaraone/ai-setup-patterns">GitHub repository</a>. Same setup task, two architectures. Interact with both sides and see the difference in complexity, speed, and where responsibility lives.</div>
+  </div>
+  <div class="divider"></div>
+
+  <div class="ctx">
+    <div>
+      <div class="ctx-t">Task: set up a webhook integration for a new buyer</div>
+      <div class="ctx-d">Connect their endpoint, map source fields to destination fields, set pricing and routing rules.</div>
+    </div>
     <button class="rbtn" onclick="resetAll()">↺ Reset</button>
   </div>
 
