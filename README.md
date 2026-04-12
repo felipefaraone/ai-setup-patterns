@@ -1,76 +1,64 @@
 # ai-setup-patterns
 
-**Where monolithic AI assistants hit their limits in production — and what to build instead.**
+**Where monolithic AI assistants hit their limits in production, and what to build instead.**
 
 [→ View the interactive demo](https://felipefaraone.github.io/ai-setup-patterns)
 
 ---
 
-## Background
+## What this is
 
-MCP (Model Context Protocol) is an open standard that lets AI models call external tools through a structured interface. In a setup flow, this means the AI can create records, fetch data, and execute configuration steps — not just talk about them.
+I was the product manager on a production AI assistant built on MCP (Model Context Protocol) in a B2B SaaS product. I worked with a small team. They built the infrastructure and the interaction layer. I led product direction, contributed to prompt strategy, and owned the decisions around what to change when production data told us the architecture had limits.
 
-This repository documents what I learned shipping a production MCP-based AI assistant in a B2B SaaS environment. I led the product management end to end — discovery, delivery, QA, and the decision framework for what to do when production data told us to change course. I worked hands-on with our product designer on prompt engineering and prompt strategy, and collaboratively with the product designer and engineering team who built the infrastructure and interaction design.
+We shipped it. It worked. Then we learned two things, one about the technology and one about the users. Both pointed in the same direction.
 
----
+## The problem and what we built
 
-## Status
+The product had a complex setup process. Users needed to configure several interdependent layers: business entities, integrations with external systems, data field mappings, targeting and routing rules. Most users couldn't do it unaided. That meant support tickets, incomplete setups, and slow time to value.
 
-The monolithic assistant is what shipped. It works, users adopted it, and it delivered real results — onboarding time went from days to under 15 minutes, with zero schema violations in production.
+We built a conversational AI assistant that walked users through the full setup in chat. It used MCP to call backend APIs, collected input through interactive cards, and ran multi-phase flows with context summarization between phases. One entry point, one conversation, everything handled.
 
-The embedded helper pattern is the architectural direction that emerged from production telemetry. It's the natural next step — not because the MVP failed, but because real usage data revealed where the architecture needs to evolve to scale. Companies like Intercom, HubSpot, and Salesforce have faced similar inflection points when moving AI from single-assistant prototypes to distributed, task-specific models. This repository documents that evolution: what we shipped (the MVP), what we measured, what the data told us, and what the next version looks like.
+It shipped. In testing, the assistant completed a full setup in under 15 minutes with zero schema violations. Users tried it. Early adoption showed real activity.
 
----
+Then the data started telling a more nuanced story.
 
-## The pattern that seems right but isn't
+## The technical learning
 
-When you first think about using AI to simplify a complex setup flow, the natural design is a conversational assistant. One entry point. The user types what they want. The AI figures out the steps, asks the right questions, and executes.
+The production telemetry showed structural problems in the architecture. Over half of session time was the model generating UI components, not doing anything intelligent. The model skipped required steps in 20 to 30% of runs, lost state between phases, and behaved differently between calls.
 
-It demos well. Leadership approves it. Then you ship it.
+We spent weeks stabilizing: splitting model usage across phases, running hundreds of test runs, restructuring context management. It got better. But the complex steps kept failing at the same rate. The team reached a clear conclusion: the remaining issues couldn't be fixed with better prompts. We had put product logic inside a prompt (sequencing, validation, state management, UI rendering), and that logic needed to move into code.
 
-Within weeks you have a list of failure modes that share a root cause you didn't see coming: **you put product logic inside a prompt**.
+This was a real and important learning. But even if we had solved every technical issue, it wouldn't have been enough. Because the second learning was about something else entirely.
 
-Sequencing. Validation. State management. UI rendering. All of it living in the AI layer, invisible to your backend, untestable in any meaningful way, and sensitive to model behavior that changes without warning.
+## The product learning
 
----
+Users would start with the assistant, hit friction, and finish manually. We initially assumed the barriers were speed and bugs. Those were real, but they weren't the core reason.
 
-## What shipped and what we learned
+The assistant only covered a slice of the total setup. Users still needed to configure campaigns, data sources, routing logic, and many other things the assistant didn't handle. All of that lived in the product UI they'd need to navigate regardless.
 
-The assistant guided users through multi-step onboarding: creating entities, configuring delivery channels, mapping fields, setting routing rules. It used MCP tools to call backend APIs, ran multi-phase flows with context summarization between phases, and used Adaptive Cards for structured input.
+So the assistant wasn't saving users from learning the product. It was just deferring it. And users figured that out quickly: if I'm going to spend time in the product anyway for everything the assistant doesn't cover, I might as well set things up there too. Learning one path is easier than learning two.
 
-It worked. Users adopted it. Onboarding time dropped from days to under 15 minutes, with zero schema violations in production. As usage scaled, the performance telemetry revealed where the architecture needed to evolve.
+The chat became a detour from a journey the user needed to take regardless.
 
-**~52% of total session time was the LLM generating Adaptive Card JSON.**
+On top of that, the assistant didn't always finish the job. Partial automation without a clear handoff is worse than no automation, because the user loses visibility into what was done and what wasn't.
 
-Not the backend — the backend was 2–4% of total time. The bottleneck was the model doing work that had nothing to do with intelligence: building UI components, formatting payloads, rendering field lists. The field mapping preview alone took 46–56 seconds per session — ~4,000 output tokens to render a table the product could have generated in milliseconds.
+The assistant proved there was interest in guided setup. But it didn't change behavior. No technical fix would have changed that. This was a product strategy question, not an execution one.
 
-That's the structural problem with the monolithic assistant pattern.
+## Where both learnings converge
 
----
+The technical side said: complex logic in prompts is fragile, untestable, and hits a ceiling. Move it to code.
 
-## Where the architecture reaches its ceiling
+The product side said: users rejected a separate AI path. The evidence suggests that contextual, embedded assistance has higher adoption than separate help channels, which is why the next step is to test that hypothesis with one helper.
 
-**The prompt does work the product should do.** Sequencing, validation, and state management belong in your application layer. When they live in a prompt, you've replaced deterministic code with probabilistic inference. The assistant might skip a required step, re-ask a question it already answered, or lose state across a context summarization boundary.
+Both point to the same pattern: smaller, focused AI capabilities embedded inside the product, not a monolithic assistant alongside it.
 
-**Reliability degrades with complexity.** Each additional phase or branching path increases the surface area for the model to deviate. A flow with 8 phases and 4 delivery types has far more failure modes than 8 separate, contained interactions.
-
-**Testing is expensive and non-deterministic.** You can't unit test a prompt. You run it, observe what happens, patch the wording, run it again. At scale this becomes dozens of manual runs per change, with results that vary between model versions and between calls to the same model.
-
-**Performance scales with output tokens, not backend complexity.** The slowest operations are almost always UI generation — the model building structured JSON for cards, tables, and choice sets. Formatting work the LLM is slow at and bad at.
-
----
+This progression has precedent. GitHub Copilot started as an inline code completion helper in 2021 and only expanded into chat, multi-file editing, and autonomous agents as each previous step proved adoption. Notion AI followed a similar arc: writing assistant (2022), then AI capabilities distributed into specific product contexts like database autofill (2023), then autonomous agents built on top of those foundations with Notion 3.0 (2025). Whether each step was deliberately contingent on the previous one is my inference, not something either company has stated, but the pattern is consistent: start embedded, prove value, expand scope.
 
 ## The embedded helper pattern
 
-Instead of one assistant that owns everything, you build focused helpers that own one task each — and expose them as backend services with clean contracts.
+Instead of one assistant that owns everything, you build focused helpers that each own one task. Not inside a chat. Inside the product, at the point where the user actually needs help.
 
-Each helper has a narrow contract:
-
-- One input type (a JSON payload, a text description, a field list)
-- One output type (a suggested mapping, a parsed config, a set of field proposals)
-- Zero responsibility for flow sequencing, state, or validation
-
-The product stays responsible for everything else. The AI does interpretation and suggestion. The product does execution.
+Each helper takes one input, returns one output, and has zero responsibility for flow sequencing or state. The product handles workflow and validation. The AI does interpretation and suggestion. The product does execution.
 
 ```
 Monolithic:
@@ -81,70 +69,31 @@ User → Product UI → [AI owns: one specific interpretation task]
                   → Product executes, validates, saves
 ```
 
-**Reliability improves** because each helper has fewer things to get wrong.
+Users stay in the product. They navigate, learn, keep control. When they hit a genuinely hard task, the helper is already there. No chat, no detour.
 
-**Performance improves** because the AI does less per call — no UI generation, no card rendering, no payload formatting.
+And the hard parts aren't things like choosing a schedule or entering a name. Those are straightforward. The hard parts are mapping fields between two systems with different naming conventions, or figuring out which criteria operators work with which data types. That's not learning. That's grunt work. Nobody gets smarter by manually mapping "first_name" to "contact_first_name." That's where AI helps without getting in the way.
 
-**Testability improves** because each helper can be evaluated independently: given input X, does the output meet expectations?
+The helpers are backend services the UI calls, like any other API. No frontend rewrite. And if the contracts are clean, the same tools can also be consumed externally via MCP by any agent that speaks the protocol.
 
-### An important clarification: helpers are services, not UI agents
+## Where this goes from here
 
-The helpers don't interact with the UI. They don't manipulate the DOM, click buttons, or drive the frontend. They are backend services that the UI calls.
+The monolithic assistant was the right first bet. It proved demand, generated the data that made the next step possible, and the infrastructure carries forward.
 
-The product screen renders a form. When the user reaches field mapping, the screen calls `prepare_webhook_mapping` behind the scenes and renders the result. The helper returns structured data; the product decides how to display it. No frontend rewrite needed — just the UI making an API call to the helper at the right moment.
+The next step is to pick the single hardest task, build one helper, and measure whether users adopt it. If they do, build the next one. If they don't, the broader thesis is weaker than the data suggests, and it's better to know early.
 
-This distinction matters because it means the same helper can serve multiple consumers without any changes to the tool itself.
+One helper at a time. Prove value, then expand. This is an informed direction, not a proven result. It's not proven until it ships.
 
----
 
-## Two consumption paths, same tools
+### Sources
+- [GitHub Copilot technical preview (2021)](https://github.blog/news-insights/product-news/introducing-github-copilot-ai-pair-programmer/)
+- [GitHub Copilot agent mode (2025)](https://github.com/newsroom/press-releases/agent-mode)
+- [GitHub coding agent (2025)](https://github.com/newsroom/press-releases/coding-agent-for-github-copilot)
+- [Notion AI launch (2022)](https://www.notion.com/blog/introducing-notion-ai)
+- [Notion AI Autofill (2023)](https://www.notion.com/releases/2023-05-31)
+- [Notion 3.0 announcement (2025)](https://www.notion.com/blog/introducing-notion-3-0)
 
-The strongest argument for building helpers with clean contracts is that they unlock two paths simultaneously:
-
-**Internal: product UI calls the helper directly**
-The user is on the Delivery Method configuration screen. They paste posting instructions. The product calls `prepare_webhook_mapping`, gets back suggested mappings, and renders them inline. The user reviews and confirms. No chat involved.
-
-**External: agents connect via MCP and call the same tools**
-An external agent (Claude with MCP connectors, a custom automation script, or a third-party integration) connects to the same MCP server and calls the same `prepare_webhook_mapping` tool. No internal chatbot flow required. The MCP standard makes these tools available to any agent that speaks the protocol.
-
-```
-Same helper, two paths:
-
-Internal:  Product UI → prepare_webhook_mapping → render in screen
-External:  Agent (Claude, GPT, custom) → MCP → prepare_webhook_mapping → structured response
-```
-
-This is what makes the pattern composable. You're not building features for one interface — you're building capabilities that any consumer can use. The internal product uses them. External agents use them. The monolithic assistant, if it stays around, uses them too — but now as a thin orchestration layer calling the same tools everyone else calls.
-
-If you've used Claude with MCP connectors (Atlassian, GitHub, Google Drive), you've already seen this model working. The value isn't in the chat UI — it's in the tools behind it.
-
----
-
-## What this looks like in practice
-
-A user wants to set up a webhook integration.
-
-**Monolithic:** The assistant carries the full flow in chat. Eight phases. Seven context summarizations. Forty-five assistant messages. Seven to ten minutes. When it fails, it can fail anywhere.
-
-**Helpers (internal path):** The assistant understands intent, collects minimal context, and opens the webhook configuration screen. The product renders the form. When the user reaches field mapping, a helper is already there — embedded in that screen, ready to take their posting instructions and return suggestions. The assistant is a routing layer. The helpers do the work.
-
-**Helpers (external path):** An external agent connects via MCP. It calls `create_delivery_method` with the right parameters. When it needs field mapping, it calls `prepare_webhook_mapping`. No chat UI, no phases, no context summarization. Just tools with clean contracts.
-
----
-
-## Why this matters for the industry
-
-The monolithic assistant was the right first step. It validated the core premise — AI can meaningfully accelerate complex setup flows — and delivered measurable results in production. The architectural evolution toward embedded helpers isn't a correction; it's the natural next phase that production telemetry made possible.
-
-This mirrors a broader pattern across B2B SaaS: companies like Notion, Linear, and Figma have moved from single AI features to distributed, context-aware helpers embedded at the point of need. The insight is the same — narrow scope, high precision, and product-layer orchestration outperform monolithic AI ownership as complexity grows.
-
-The addition of MCP as an external API surface extends this pattern further. The same tools that power internal helpers become available to any agent that speaks the protocol — making the product not just AI-assisted, but AI-accessible.
-
-The embedded helper pattern has its own design challenges. Helpers that are too narrow don't deliver enough value. Helpers in the wrong part of the flow don't get used. But each helper can be evaluated, measured, and improved independently — which is what makes the architecture scalable.
-
----
 
 ## Author
 
-Felipe Faraone — Senior Product Manager
+Felipe Faraone, Senior Product Manager
 [felipefaraone.com](https://felipefaraone.com) · [LinkedIn](https://linkedin.com/in/felipefaraone) · [GitHub](https://github.com/felipefaraone)
