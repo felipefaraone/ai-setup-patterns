@@ -101,3 +101,4 @@ One helper at a time. Prove value, then expand. This is an informed direction, n
 
 Felipe Faraone, Senior Product Manager
 [felipefaraone.com](https://felipefaraone.com) · [LinkedIn](https://linkedin.com/in/felipefaraone) · [GitHub](https://github.com/felipefaraone)
+
